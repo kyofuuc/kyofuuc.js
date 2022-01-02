@@ -1,0 +1,48 @@
+{
+  "name": "kyofuuc",
+  "version": "0.0.1",
+  "description": "Powerful HTTP request for the browser and node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyofuuc/kyofuuc.js.git"
+  },
+  "keywords": [
+    "http",
+    "https",
+    "http2",
+    "promise",
+    "request",
+    "url",
+    "nodejs",
+    "javascript",
+    "get",
+    "got",
+    "uri",
+    "axios",
+    "superagent",
+    "node-fetch",
+    "ky",
+    "request",
+    "simple",
+    "curl",
+    "wget",
+    "fetch",
+    "net",
+    "network",
+    "gzip",
+    "brotli",
+    "requests",
+    "human-friendly"
+  ],
+  "author": "thecarisma",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kyofuuc/kyofuuc.js/issues"
+  },
+  "homepage": "https://github.com/kyofuuc/kyofuuc.js#readme",
+  "dependencies": {}
+}
