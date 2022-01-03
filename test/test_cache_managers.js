@@ -40,10 +40,14 @@ it('MapFFSCacheManager test', () => {
 	const mapFFSCacheManager = new MapFFSCacheManager(map);
 	mapFFSCacheManager.registerInterceptors(fuInterceptor);
 
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), undefined);
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "POST_RESPONSE", { cache: mapFFSCacheManager, response: { status: 200 }}), undefined);
-	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), undefined);
-	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), { status: 200 });
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "POST_RESPONSE", { cache: mapFFSCacheManager }, { status: 200 }), []);
+	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), [{
+		FROM_FFS_CACHE_MANAGER_INTERCEPTOR: true,
+		key: "undefined_SINGLE",
+		value: { status: 200 }
+	}]);
 
 	assert.deepEqual(map, { user: "thecarisma", undefined_SINGLE: { status: 200 } });
 	assert.deepEqual(map.user, "thecarisma");
@@ -55,10 +59,14 @@ it('MapFFSCacheManager test Alt', () => {
 	const mapFFSCacheManager = new MapFFSCacheManager();
 	mapFFSCacheManager.registerInterceptors(fuInterceptor);
 
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), undefined);
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "POST_RESPONSE", { cache: mapFFSCacheManager, response: { status: 200 }}), undefined);
-	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), undefined);
-	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), { status: 200 });
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "POST_RESPONSE", { cache: mapFFSCacheManager }, { status: 200 }), []);
+	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: mapFFSCacheManager }), [{
+		FROM_FFS_CACHE_MANAGER_INTERCEPTOR: true,
+		key: "undefined_SINGLE",
+		value: { status: 200 }
+	}]);
 });
 
 it('LocalStorageFFSCacheManager test', () => {
@@ -67,10 +75,14 @@ it('LocalStorageFFSCacheManager test', () => {
 	const lsFFSCacheManager = new LocalStorageFFSCacheManager(null, null, localStorage);
 	lsFFSCacheManager.registerInterceptors(fuInterceptor);
 
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), undefined);
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: lsFFSCacheManager, response: "{ status: 200 }"}), undefined);
-	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), undefined);
-	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), "{ status: 200 }");
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: lsFFSCacheManager }, "{ status: 200 }"), []);
+	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), [{
+		FROM_FFS_CACHE_MANAGER_INTERCEPTOR: true,
+		key: "undefined_SINGLE",
+		value: "{ status: 200 }"
+	}]);
 	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), "{ status: 200 }");
 });
 
@@ -80,10 +92,14 @@ it('LocalStorageFFSCacheManager test with encryptor and decryptor', () => {
 	const lsFFSCacheManager = new LocalStorageFFSCacheManager(decryptor, encryptor, localStorage);
 	lsFFSCacheManager.registerInterceptors(fuInterceptor);
 
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), undefined);
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: lsFFSCacheManager, response: "{ status: 200 }"}), undefined);
-	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), undefined);
-	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), decryptor("{ status: 200 }"));
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: lsFFSCacheManager }, "{ status: 200 }"), []);
+	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), [{
+		FROM_FFS_CACHE_MANAGER_INTERCEPTOR: true,
+		key: "undefined_SINGLE",
+		value: decryptor("{ status: 200 }")
+	}]);
 	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), decryptor("{ status: 200 }"));
 });
 
@@ -93,10 +109,14 @@ it('SessionStorageFFSCacheManager test', () => {
 	const ssFFSCacheManager = new SessionStorageFFSCacheManager(null, null, localStorage);
 	ssFFSCacheManager.registerInterceptors(fuInterceptor);
 
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), undefined);
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: ssFFSCacheManager, response: "{ status: 200 }"}), undefined);
-	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), undefined);
-	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), "{ status: 200 }");
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: ssFFSCacheManager }, "{ status: 200 }"), []);
+	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), [{
+		FROM_FFS_CACHE_MANAGER_INTERCEPTOR: true,
+		key: "undefined_SINGLE",
+		value: "{ status: 200 }"
+	}]);
 	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), "{ status: 200 }");
 });
 
@@ -106,10 +126,14 @@ it('SessionStorageFFSCacheManager test with encryptor and decryptor', () => {
 	const ssFFSCacheManager = new SessionStorageFFSCacheManager(decryptor, encryptor, localStorage);
 	ssFFSCacheManager.registerInterceptors(fuInterceptor);
 
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), undefined);
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: ssFFSCacheManager, response: "{ status: 200 }"}), undefined);
-	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), undefined);
-	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), decryptor("{ status: 200 }"));
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: ssFFSCacheManager }, "{ status: 200 }"), []);
+	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), [{
+		FROM_FFS_CACHE_MANAGER_INTERCEPTOR: true,
+		key: "undefined_SINGLE",
+		value: decryptor("{ status: 200 }")
+	}]);
 	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), decryptor("{ status: 200 }"));
 });
 
@@ -119,9 +143,9 @@ it('CookieFFSCacheManager test', () => {
 	const cookieFFSCacheManager = new CookieFFSCacheManager(null, null, null, localStorage);
 	cookieFFSCacheManager.registerInterceptors(fuInterceptor);
 
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), undefined);
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: cookieFFSCacheManager, response: { status: 200 }}), undefined);
-	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), undefined);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: cookieFFSCacheManager }, { status: 200 }), []);
+	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
 	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), JSON.stringify({
 		name: "undefined_SINGLE",
 		expires: "",
@@ -136,9 +160,9 @@ it('CookieFFSCacheManager test with encryptor and decryptor', () => {
 	const cookieFFSCacheManager = new CookieFFSCacheManager(decryptor, encryptor, null, localStorage);
 	cookieFFSCacheManager.registerInterceptors(fuInterceptor);
 
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), undefined);
-	assert.equal(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: cookieFFSCacheManager, response: "{ status: 200 }"}), undefined);
-	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), undefined);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
+	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: cookieFFSCacheManager }, "{ status: 200 }"), []);
+	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
 	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), JSON.stringify({
 		name: "undefined_SINGLE",
 		expires: "",
@@ -147,6 +171,9 @@ it('CookieFFSCacheManager test with encryptor and decryptor', () => {
 	}));
 });
 
-it('RedisFFSCacheManager test', () => {
+it('KonfigerFFSCacheManager test', () => {
+});
+
+it('KeyvRedisFFSCacheManager test', () => {
 });
 

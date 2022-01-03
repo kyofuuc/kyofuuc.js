@@ -1,3 +1,4 @@
+
 const assert = require('assert');
 const utils = require('../lib/utils');
 
@@ -29,3 +30,75 @@ it('utils.mergeObject', () => {
 	assert.notEqual(merged.method, obj2.method);
 	assert.equal(merged.method, obj1.method);
 });
+
+it('utils.isURLSearchParams', () => {
+	let url = new URL('https://example.com?foo=1&bar=2');
+	let params = new URLSearchParams(url.search);
+	var params2 = new URLSearchParams("foo=1&bar=2");
+	var params2a = new URLSearchParams("?foo=1&bar=2");
+	var params3 = new URLSearchParams([["foo", "1"], ["bar", "2"]]);
+	var params4 = new URLSearchParams({"foo": "1", "bar": "2"});
+
+	assert.equal(utils.isURLSearchParams(params), true);
+	assert.equal(utils.isURLSearchParams(params2), true);
+	assert.equal(utils.isURLSearchParams(params2a), true);
+	assert.equal(utils.isURLSearchParams(params3), true);
+	assert.equal(utils.isURLSearchParams(params4), true);
+	assert.equal(utils.isURLSearchParams(params2.toString()), false);
+});
+
+it('utils.encodeParamURI', () => {
+	assert.equal(utils.encodeParamURI("What [] is this"), "What+[]+is+this");
+	assert.equal(utils.encodeParamURI("+:8374387[]dfyu$%#%"), "%2B:8374387[]dfyu$%25%23%25");
+	assert.equal(utils.encodeParamURI("user:thecarisma&year:2022&planet:earth"), "user:thecarisma%26year:2022%26planet:earth");
+	assert.equal(utils.encodeParamURI("user=thecarisma&year=2022&planet=earth"), "user%3Dthecarisma%26year%3D2022%26planet%3Dearth");
+});
+
+function customParamsSerializer(params) {
+	let serializedParams = [];
+	for (var key in params) {
+		serializedParams.push(`CPS_${key}=VALUE_${params[key]}_END`);
+	}
+	return serializedParams;
+}
+
+it('utils.buildURL', () => {
+	const params = {
+		name: "thecarisma",
+		year: 2022,
+		planet: "Earth"
+	};
+	const url = new URL('https://example.com?foo=1&bar=2');
+	const urlSearchParams = new URLSearchParams(url.search);
+	const urlSearchParams2 = new URLSearchParams("foo=1&bar=2");
+	const urlSearchParams2a = new URLSearchParams("?foo=1&bar=2");
+	const urlSearchParams3 = new URLSearchParams([["foo", "1"], ["bar", "2"]]);
+	const urlSearchParams4 = new URLSearchParams({"foo": "1", "bar": "2"});
+	const urlSearchParams5 = new URLSearchParams(params);
+
+	assert.equal(utils.buildURL("https://thecarisma.github.io/", params, customParamsSerializer),
+		"https://thecarisma.github.io/?CPS_name=VALUE_thecarisma_END,CPS_year=VALUE_2022_END,CPS_planet=VALUE_Earth_END");
+	assert.equal(utils.buildURL("https://thecarisma.github.io/", urlSearchParams), "https://thecarisma.github.io/?foo=1&bar=2");
+	assert.equal(utils.buildURL("https://thecarisma.github.io/", urlSearchParams2), "https://thecarisma.github.io/?foo=1&bar=2");
+	assert.equal(utils.buildURL("https://thecarisma.github.io/", urlSearchParams2a), "https://thecarisma.github.io/?foo=1&bar=2");
+	assert.equal(utils.buildURL("https://thecarisma.github.io/", urlSearchParams3), "https://thecarisma.github.io/?foo=1&bar=2");
+	assert.equal(utils.buildURL("https://thecarisma.github.io/", urlSearchParams4), "https://thecarisma.github.io/?foo=1&bar=2");
+	assert.equal(utils.buildURL("https://thecarisma.github.io/", urlSearchParams5), "https://thecarisma.github.io/?name=thecarisma&year=2022&planet=Earth");
+	assert.equal(utils.buildURL("https://thecarisma.github.io/", params), "https://thecarisma.github.io/?name=thecarisma&year=2022&planet=Earth");
+	assert.equal(utils.buildURL("https://thecarisma.github.io/", params), utils.buildURL("https://thecarisma.github.io/", urlSearchParams5));
+});
+
+it('utils.buildURL types', () => {
+	const date = new Date();
+	const params = {
+		name: "thecarisma",
+		years: [2022, 2023, "beyound"],
+		age: 5677,
+		planet: "Earth",
+		time: date
+	};
+
+	assert.equal(utils.buildURL("https://thecarisma.github.io/", params), 
+		"https://thecarisma.github.io/?name=thecarisma&years[]=2022&years[]=2023&years[]=beyound&age=5677&planet=Earth&time=" + date.toISOString());
+});
+
