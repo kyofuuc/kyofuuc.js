@@ -18,10 +18,10 @@ try {
 const assert = require('assert');
 const utils = require('../lib/utils');
 const FuInterceptor = require('../lib/core/FuInterceptor');
-const MapFFSCacheManager = require('../lib/cache_managers/MapFFSCacheManager');
-const CookieFFSCacheManager = require('../lib/cache_managers/CookieFFSCacheManager');
-const LocalStorageFFSCacheManager = require('../lib/cache_managers/LocalStorageFFSCacheManager');
-const SessionStorageFFSCacheManager = require('../lib/cache_managers/SessionStorageFFSCacheManager');
+const MapFFSCacheManager = require('../lib/cachemanagers/MapFFSCacheManager');
+const CookieFFSCacheManager = require('../lib/cachemanagers/CookieFFSCacheManager');
+const LocalStorageFFSCacheManager = require('../lib/cachemanagers/LocalStorageFFSCacheManager');
+const SessionStorageFFSCacheManager = require('../lib/cachemanagers/SessionStorageFFSCacheManager');
 
 function decryptor(value, options) {
 	return `{0123456890}_ENCRYPTED`;
