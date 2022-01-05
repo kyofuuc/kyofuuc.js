@@ -102,3 +102,20 @@ it('utils.buildURL types', () => {
 		"https://thecarisma.github.io?name=thecarisma&years[]=2022&years[]=2023&years[]=beyound&age=5677&planet=Earth&time=" + date.toISOString());
 });
 
+it('utils.kyofuucError', () => {
+	const kError1 = utils.kyofuucError("Test Error 1", {});
+	const kError2 = utils.kyofuucError("Test Error 2", { url: "https://thecarisma.github.io"});
+	const kError3 = utils.kyofuucError(
+		"Test Error 3", 
+		{
+			url: "https://thecarisma.github.io"
+		},
+		utils.ERROR_CODES.UNKNOWN_ERRORS);
+
+	assert.equal(kError1.message, "Test Error 1");
+	assert.equal(kError2.message, "Test Error 2");
+	console.log(kError1.toJSON())
+	assert.deepEqual(kError1.toJSON().config, {});
+	assert.deepEqual(kError2.toJSON().config, { url: "https://thecarisma.github.io"});
+});
+
