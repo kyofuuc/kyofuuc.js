@@ -114,8 +114,46 @@ it('utils.kyofuucError', () => {
 
 	assert.equal(kError1.message, "Test Error 1");
 	assert.equal(kError2.message, "Test Error 2");
-	console.log(kError1.toJSON())
+	assert.equal(kError3.message, "Test Error 3");
 	assert.deepEqual(kError1.toJSON().config, {});
 	assert.deepEqual(kError2.toJSON().config, { url: "https://thecarisma.github.io"});
+	assert.deepEqual(kError3.toJSON().config, { url: "https://thecarisma.github.io"});
+	assert.deepEqual(kError3.toJSON().errorCode, utils.ERROR_CODES.UNKNOWN_ERRORS);
+});
+
+it('utils.isAbsoluteURL', () => {
+	assert.equal(utils.isAbsoluteURL("http://google.com"), true);
+	assert.equal(utils.isAbsoluteURL("google.com"), false);
+	assert.equal(utils.isAbsoluteURL("https://thecarisma.github.io"), true);
+	assert.equal(utils.isAbsoluteURL("/user/token"), false);
+});
+
+it('utils.isRelativeURL', () => {
+	assert.equal(utils.isRelativeURL("http://google.com"), false);
+	assert.equal(utils.isRelativeURL("google.com"), true);
+	assert.equal(utils.isRelativeURL("https://thecarisma.github.io"), false);
+	assert.equal(utils.isRelativeURL("/user/token"), true);
+});
+
+it('utils.combineURLs', () => {
+	assert.equal(utils.combineURLs("https://thecarisma.github.io/", "/user/token"), "https://thecarisma.github.io/user/token")
+	assert.equal(utils.combineURLs("google.com", "search"), "google.com/search");
+});
+
+it('utils.buildFullURLPath', () => {
+	assert.equal(utils.buildFullURLPath("google.com", "search"), "google.com/search");
+	assert.equal(utils.buildFullURLPath("google.com", "http://search.com"), "http://search.com");
+});
+
+it('utils.mergeClassAttribute', () => {
+
+});
+
+it('utils.mergeClassPrototypes', () => {
+
+});
+
+it('utils.mergeClasses', () => {
+
 });
 
