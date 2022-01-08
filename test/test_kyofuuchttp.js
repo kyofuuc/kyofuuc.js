@@ -46,8 +46,11 @@ it('kyofuuc request', () => {
 	function reqListener () {
 		console.log(this.responseText);
 	}
-	console.log(ffs.httpBaseConfig)
-	ffs.get("google.com");
+	ffs.get("https://google.com/search", { maxRedirects: -1, timeout: 2000, params: { one: "one"} }).then(function (response) {
+		console.log("RESPONSE", response.status)
+	}).catch(function (err) {
+		console.error(err.message)
+	});
 	  
 	  /*var oReq = new XMLHttpRequest();
 	  oReq.addEventListener("load", reqListener);

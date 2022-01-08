@@ -118,7 +118,7 @@ it('utils.kyofuucError', () => {
 	assert.deepEqual(kError1.toJSON().config, {});
 	assert.deepEqual(kError2.toJSON().config, { url: "https://thecarisma.github.io"});
 	assert.deepEqual(kError3.toJSON().config, { url: "https://thecarisma.github.io"});
-	assert.deepEqual(kError3.toJSON().errorCode, utils.ERROR_CODES.UNKNOWN_ERRORS);
+	assert.deepEqual(kError3.toJSON().code, utils.ERROR_CODES.UNKNOWN_ERRORS);
 });
 
 it('utils.isAbsoluteURL', () => {
