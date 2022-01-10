@@ -23,3 +23,10 @@ cacheOptions: {
 	Secure: true
 }
 ```
+
+http configs
+```
+{
+	storeRedirectsData: false
+}
+```
