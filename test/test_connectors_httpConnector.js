@@ -1,8 +1,11 @@
 
 const assert = require('assert');
 const app = require("./resc/server");
-const httpConnector = require("../lib/connectors/http/httpConnector");
 const defaults = require('../lib/helpers/defaults');
+const FuInterceptor = require('../lib/core/FuInterceptor');
+const httpConnector = require("../lib/connectors/http/httpConnector");
+const MapFFSCacheManager = require('../lib/cachemanagers/MapFFSCacheManager');
+
 let server;
 
 before(done => {
@@ -218,5 +221,20 @@ it('httpConnector test request basic auth', async () => {
 	assert.equal(hcResponse2.data.message, "Invalid Authentication Credentials");
 	assert.equal(hcResponse3.data.message, "Success");
 	//assert.equal(hc1);
+});
+
+it('httpConnector test with cache', async () => {
+	const fuInterceptor = new FuInterceptor();
+	const mapFFSCacheManager = new MapFFSCacheManager();
+	mapFFSCacheManager.registerInterceptors(fuInterceptor);
+	const hcResponse = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "GET",
+		cache: mapFFSCacheManager
+	});
+
+	console.log(mapFFSCacheManager.bucket);
+	assert.equal(hcResponse.status, 200);
+	assert.equal(hcResponse.data, "Hello World!");
 });
 

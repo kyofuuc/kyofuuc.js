@@ -28,6 +28,17 @@ http configs
 ```
 {
 	storeRedirectsData: false,
-	withCredentials: false
+	withCredentials: false,
+	cache: null,
+	refreshCache: true,
+	invalidateCache: true
 }
 ```
+
+remove when invalidateCache is true
+do not use cache value if refreshCache is true
+
+TODO
+
+- [ ] if possible track cache size
+- [ ] add encryptor and decryptor to MapFFSCacheManager

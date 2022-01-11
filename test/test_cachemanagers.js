@@ -23,11 +23,12 @@ const CookieFFSCacheManager = require('../lib/cachemanagers/CookieFFSCacheManage
 const LocalStorageFFSCacheManager = require('../lib/cachemanagers/LocalStorageFFSCacheManager');
 const SessionStorageFFSCacheManager = require('../lib/cachemanagers/SessionStorageFFSCacheManager');
 
-function decryptor(value, options) {
-	return `{0123456890}_ENCRYPTED`;
+function decryptor(value, config) {
+	return Buffer.from(value).toString('base64');
 }
-function encryptor(value, options) {
-	return `{0123456890}_ENCRYPTED`;
+
+function encryptor(value, config) {
+	return Buffer.from(value, 'base64').toString('ascii');
 }
 
 it('*FFSCacheManager TODO', () => {
@@ -52,6 +53,12 @@ it('MapFFSCacheManager test', () => {
 	assert.deepEqual(map, { user: "thecarisma", undefined_SINGLE: { status: 200 } });
 	assert.deepEqual(map.user, "thecarisma");
 	assert.deepEqual(map.undefined_SINGLE, { status: 200 });
+	mapFFSCacheManager.set({ key: "test.com_SINGLE" }, { status: 300 });
+	assert.deepEqual(mapFFSCacheManager.get({ key: "undefined_SINGLE" }), { status: 200 });
+	assert.deepEqual(mapFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
+	mapFFSCacheManager.remove({ key: "test.com_SINGLE" });
+	assert.notEqual(mapFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
+	assert.deepEqual(mapFFSCacheManager.get({ key: "test.com_SINGLE" }), undefined);
 });
 
 it('MapFFSCacheManager test Alt', () => {
@@ -67,6 +74,12 @@ it('MapFFSCacheManager test Alt', () => {
 		key: "undefined_SINGLE",
 		value: { status: 200 }
 	}]);
+	mapFFSCacheManager.set({ key: "test.com_SINGLE" }, { status: 300 });
+	assert.deepEqual(mapFFSCacheManager.get({ key: "undefined_SINGLE" }), { status: 200 });
+	assert.deepEqual(mapFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
+	mapFFSCacheManager.remove({ key: "test.com_SINGLE" });
+	assert.notEqual(mapFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
+	assert.deepEqual(mapFFSCacheManager.get({ key: "test.com_SINGLE" }), undefined);
 });
 
 it('LocalStorageFFSCacheManager test', () => {
@@ -84,6 +97,12 @@ it('LocalStorageFFSCacheManager test', () => {
 		value: "{ status: 200 }"
 	}]);
 	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), "{ status: 200 }");
+	lsFFSCacheManager.set({ key: "test.com_SINGLE" }, "{ status: 300 }");
+	assert.deepEqual(lsFFSCacheManager.get({ key: "undefined_SINGLE" }), "{ status: 200 }");
+	assert.deepEqual(lsFFSCacheManager.get({ key: "test.com_SINGLE" }), "{ status: 300 }");
+	lsFFSCacheManager.remove({ key: "test.com_SINGLE" });
+	assert.notEqual(lsFFSCacheManager.get({ key: "test.com_SINGLE" }), "{ status: 300 }");
+	assert.deepEqual(lsFFSCacheManager.get({ key: "test.com_SINGLE" }), undefined);
 });
 
 it('LocalStorageFFSCacheManager test with encryptor and decryptor', () => {
@@ -101,6 +120,12 @@ it('LocalStorageFFSCacheManager test with encryptor and decryptor', () => {
 		value: decryptor("{ status: 200 }")
 	}]);
 	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), decryptor("{ status: 200 }"));
+	lsFFSCacheManager.set({ key: "test.com_SINGLE" }, "{ status: 300 }");
+	assert.deepEqual(lsFFSCacheManager.get({ key: "undefined_SINGLE" }), "{ status: 200 }");
+	assert.deepEqual(lsFFSCacheManager.get({ key: "test.com_SINGLE" }), "{ status: 300 }");
+	lsFFSCacheManager.remove({ key: "test.com_SINGLE" });
+	assert.notEqual(lsFFSCacheManager.get({ key: "test.com_SINGLE" }), "{ status: 300 }");
+	assert.deepEqual(lsFFSCacheManager.get({ key: "test.com_SINGLE" }), undefined);
 });
 
 it('SessionStorageFFSCacheManager test', () => {
@@ -118,6 +143,12 @@ it('SessionStorageFFSCacheManager test', () => {
 		value: "{ status: 200 }"
 	}]);
 	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), "{ status: 200 }");
+	ssFFSCacheManager.set({ key: "test.com_SINGLE" }, "{ status: 300 }");
+	assert.deepEqual(ssFFSCacheManager.get({ key: "undefined_SINGLE" }), "{ status: 200 }");
+	assert.deepEqual(ssFFSCacheManager.get({ key: "test.com_SINGLE" }), "{ status: 300 }");
+	ssFFSCacheManager.remove({ key: "test.com_SINGLE" });
+	assert.notEqual(ssFFSCacheManager.get({ key: "test.com_SINGLE" }), "{ status: 300 }");
+	assert.deepEqual(ssFFSCacheManager.get({ key: "test.com_SINGLE" }), undefined);
 });
 
 it('SessionStorageFFSCacheManager test with encryptor and decryptor', () => {
@@ -135,6 +166,12 @@ it('SessionStorageFFSCacheManager test with encryptor and decryptor', () => {
 		value: decryptor("{ status: 200 }")
 	}]);
 	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), decryptor("{ status: 200 }"));
+	ssFFSCacheManager.set({ key: "test.com_SINGLE" }, "{ status: 300 }");
+	assert.deepEqual(ssFFSCacheManager.get({ key: "undefined_SINGLE" }), "{ status: 200 }");
+	assert.deepEqual(ssFFSCacheManager.get({ key: "test.com_SINGLE" }), "{ status: 300 }");
+	ssFFSCacheManager.remove({ key: "test.com_SINGLE" });
+	assert.notEqual(ssFFSCacheManager.get({ key: "test.com_SINGLE" }), "{ status: 300 }");
+	assert.deepEqual(ssFFSCacheManager.get({ key: "test.com_SINGLE" }), undefined);
 });
 
 it('CookieFFSCacheManager test', () => {
@@ -146,12 +183,13 @@ it('CookieFFSCacheManager test', () => {
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: cookieFFSCacheManager }, { status: 200 }), []);
 	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
-	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), JSON.stringify({
-		name: "undefined_SINGLE",
-		expires: "",
-		value: { status: 200 },
-		path: "/"
-	}));
+	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), { status: 200 });
+	cookieFFSCacheManager.set({ key: "test.com_SINGLE" }, { status: 300 });
+	assert.deepEqual(cookieFFSCacheManager.get({ key: "undefined_SINGLE" }), { status: 200 });
+	assert.deepEqual(cookieFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
+	cookieFFSCacheManager.remove({ key: "test.com_SINGLE" });
+	assert.notEqual(cookieFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
+	assert.deepEqual(cookieFFSCacheManager.get({ key: "test.com_SINGLE" }), undefined);
 });
 
 it('CookieFFSCacheManager test with encryptor and decryptor', () => {
@@ -163,12 +201,18 @@ it('CookieFFSCacheManager test with encryptor and decryptor', () => {
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { cache: cookieFFSCacheManager }, "{ status: 200 }"), []);
 	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
-	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), JSON.stringify({
-		name: "undefined_SINGLE",
+	assert.deepEqual(localStorage.getItem("undefined_SINGLE"), decryptor("{ status: 200 }"));
+	cookieFFSCacheManager.set({ key: "test.com_SINGLE" }, "{ status: 300 }");
+	assert.deepEqual(cookieFFSCacheManager.get({ key: "undefined_SINGLE" }), "{ status: 200 }");
+	assert.deepEqual(cookieFFSCacheManager.get({ key: "test.com_SINGLE" }), "{ status: 300 }");
+	cookieFFSCacheManager.remove({ key: "test.com_SINGLE" });
+	assert.notEqual(cookieFFSCacheManager.get({ key: "test.com_SINGLE" }), JSON.stringify({
+		name: "test.com_SINGLE",
 		expires: "",
-		value: decryptor("{ status: 200 }", {}),
+		value: "{ status: 300 }",
 		path: "/"
 	}));
+	assert.deepEqual(cookieFFSCacheManager.get({ key: "test.com_SINGLE" }), undefined);
 });
 
 it('KonfigerFFSCacheManager test', () => {
