@@ -15,16 +15,51 @@ after(done => {
 	}
 });
 
-it('httpConnector test get request', async () => {
+it('httpConnector server greet', async () => {
 	const hcResponse = await httpConnector({
 		url: "http://127.0.0.1:3009/greet",
-		method: "GET",
-		timeout: 5000
+		method: "GET"
 	});
 
 	assert.equal(hcResponse.status, 200);
 	assert.equal(hcResponse.data, "Hello World!");
-}).timeout(20000);
+});
+
+it('httpConnector test delete request', async () => {
+	const hcResponse = await httpConnector({
+		url: "http://127.0.0.1:3009/delete",
+		method: "DELETE"
+	});
+
+	assert.equal(hcResponse.status, 204);
+});
+
+it('httpConnector test get request', async () => {
+	const hcResponse = await httpConnector({
+		url: "http://127.0.0.1:3009/get",
+		method: "GET"
+	});
+
+	assert.equal(hcResponse.status, 204);
+});
+
+it('httpConnector test head request', async () => {
+	const hcResponse = await httpConnector({
+		url: "http://127.0.0.1:3009/head",
+		method: "HEAD"
+	});
+
+	assert.equal(hcResponse.status, 204);
+});
+
+it('httpConnector test options request', async () => {
+	const hcResponse = await httpConnector({
+		url: "http://127.0.0.1:3009/options",
+		method: "OPTIONS"
+	});
+
+	assert.equal(hcResponse.status, 204);
+});
 
 it('httpConnector test get request headers', async () => {
 	const hcResponse = await httpConnector({
@@ -37,7 +72,7 @@ it('httpConnector test get request headers', async () => {
 	assert.equal(hcResponse.headers['cache-control'], "max-age=0");
 	assert.equal(hcResponse.headers.url, "/headers");
 	assert.equal(hcResponse.status, 200);
-}).timeout(20000);
+});
 
 it('httpConnector test redirect', async () => {
 	const hcResponse1 = await httpConnector({
@@ -71,7 +106,7 @@ it('httpConnector test redirect', async () => {
 	assert.equal(hcResponse1.status, 301);
 	assert.equal(hcResponse2.status, 302);
 	assert.equal(hcResponse3.status, 200);
-}).timeout(20000);
+});
 
 it('httpConnector test redirect with redirectsData', async () => {
 	const hcResponse = await httpConnector({
@@ -89,7 +124,7 @@ it('httpConnector test redirect with redirectsData', async () => {
 	assert.equal(hcResponse.redirectsData[1].status, 302);
 	assert.equal(hcResponse.redirectsData.length, 2);
 	assert.equal(hcResponse.status, 200);
-}).timeout(20000);
+});
 
 it('httpConnector test post request', async () => {
 	const hcResponse = await httpConnector({
@@ -102,24 +137,86 @@ it('httpConnector test post request', async () => {
 		data: {
 			email: "test@mail.com",
 			password: "pass"
-		}
+		},
+		responseType: "json"
 	});
 
-	console.log(hcResponse.status, hcResponse.data);
 	assert.equal(hcResponse.status, 200);
+	assert.equal(hcResponse.data.email, "test@mail.com");
+	assert.equal(hcResponse.data.password, "pass");
 });
 
-/*it('post request auth', () => {
-	const hc1 = httpConnector({
-		url: "https://thecarisma.github.io",
+it('httpConnector test patch request', async () => {
+	const hcResponse = await httpConnector({
+		url: "http://127.0.0.1:3009/patch",
+		method: "PATCH",
+		headers: {
+			"User-Agent": "kyofuuc/0.01",
+			'Content-Type': 'application/json'
+		},
+		data: {
+			email: "test@mail.com",
+			password: "pass"
+		},
+		responseType: "json"
+	});
+	
+	assert.equal(hcResponse.status, 200);
+	assert.equal(hcResponse.data.email, "test@mail.com");
+	assert.equal(hcResponse.data.password, "pass");
+});
+
+it('httpConnector test put request', async () => {
+	const hcResponse = await httpConnector({
+		url: "http://127.0.0.1:3009/put",
+		method: "PUT",
+		headers: {
+			"User-Agent": "kyofuuc/0.01",
+			'Content-Type': 'application/json'
+		},
+		data: {
+			email: "test@mail.com",
+			password: "pass"
+		},
+		responseType: "json"
+	});
+	
+	assert.equal(hcResponse.status, 200);
+	assert.equal(hcResponse.data.email, "test@mail.com");
+	assert.equal(hcResponse.data.password, "pass");
+});
+
+it('httpConnector test request basic auth', async () => {
+	const hcResponse1 = await httpConnector({
+		url: "http://127.0.0.1:3009/profile",
+		method: "GET",
+		responseType: "json"
+	});
+	const hcResponse2 = await httpConnector({
+		url: "http://127.0.0.1:3009/profile",
+		method: "GET",
+		auth: {
+			username: "test.wrong@mail.com",
+			password: "password"
+		},
+		responseType: "json"
+	});
+	const hcResponse3 = await httpConnector({
+		url: "http://127.0.0.1:3009/profile",
 		method: "GET",
 		auth: {
 			username: "test@mail.com",
 			password: "password"
-		}
+		},
+		responseType: "json"
 	});
 
-	console.log(hc1);
+	assert.equal(hcResponse1.status, 400);
+	assert.equal(hcResponse2.status, 401);
+	assert.equal(hcResponse3.status, 200);
+	assert.equal(hcResponse1.data.message, "Missing Authorization Header");
+	assert.equal(hcResponse2.data.message, "Invalid Authentication Credentials");
+	assert.equal(hcResponse3.data.message, "Success");
 	//assert.equal(hc1);
-});*/
+});
 

@@ -2,7 +2,14 @@
 const express = require('express');
 const app = express();
 const port = 3009;
+const allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+};
 
+app.use(allowCrossDomain);
 app.use(express.json());
 
 app.get('/greet', (req, res) => {
@@ -39,9 +46,31 @@ app.get('/redirect/:status/:next_status_code', (req, res) => {
 	res.end();
 });
 
-app.post('/post', (req, res) => {
-	res.json(req.body);
-	res.end();
+["post", "patch", "put"].map(method => {
+	app[method](`/${method}`, (req, res) => {
+		res.json(req.body);
+		res.end();
+	});
+});
+
+['delete', 'get', 'head', 'options'].map(method => {
+	app[method](`/${method}`, (req, res) => {
+		res.status(204);
+		res.end();
+	});
+});
+
+app.get('/profile', (req, res) => {
+	if (!req.headers.authorization || req.headers.authorization.indexOf("Basic ") === -1) {
+        return res.status(400).json({ message: "Missing Authorization Header" });
+    }
+	const base64Credentials =  req.headers.authorization.split(' ')[1];
+    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+    const [username, password] = credentials.split(':');
+    if (!(username === "test@mail.com" && password === "password")) {
+        return res.status(401).json({ message: 'Invalid Authentication Credentials' });
+    }
+	res.json({ message: 'Success' });
 });
 
 module.exports = app;

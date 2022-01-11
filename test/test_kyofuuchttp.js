@@ -46,7 +46,7 @@ it('kyofuuc request', () => {
 	function reqListener () {
 		console.log(this.responseText);
 	}
-	ffs.get("https://google.com/search", { maxRedirects: -1, timeout: 2000, params: { one: "one"} }).then(function (response) {
+	ffs.get("https://google.com/search").then(function (response) {
 		console.log("RESPONSE", response.status)
 	}).catch(function (err) {
 		console.error(err.message)

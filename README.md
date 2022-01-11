@@ -27,6 +27,7 @@ cacheOptions: {
 http configs
 ```
 {
-	storeRedirectsData: false
+	storeRedirectsData: false,
+	withCredentials: false
 }
 ```
