@@ -1,10 +1,29 @@
 
+try {
+	localStorage.setItem("FFS_TEST_CACHE_MANAGE", "TEST");
+	localStorage.removeItem("FFS_TEST_CACHE_MANAGE");
+} catch(e) {
+	var localStorage = {};
+	localStorage.getItem = function getItem(key) {
+		return localStorage[key];
+	};
+	localStorage.setItem = function setItem(key, value) {
+		localStorage[key] = value;
+	};
+	localStorage.removeItem = function removeItem(key) {
+		delete localStorage[key];
+	};
+}
+
 const assert = require('assert');
 const app = require("./resc/server");
 const defaults = require('../lib/helpers/defaults');
 const FuInterceptor = require('../lib/core/FuInterceptor');
 const httpConnector = require("../lib/connectors/http/httpConnector");
 const MapFFSCacheManager = require('../lib/cachemanagers/MapFFSCacheManager');
+const CookieFFSCacheManager = require('../lib/cachemanagers/CookieFFSCacheManager');
+const LocalStorageFFSCacheManager = require('../lib/cachemanagers/LocalStorageFFSCacheManager');
+const SessionStorageFFSCacheManager = require('../lib/cachemanagers/SessionStorageFFSCacheManager');
 
 let server;
 
@@ -18,7 +37,7 @@ after(done => {
 	}
 });
 
-it('httpConnector server greet', async () => {
+/*it('httpConnector server greet', async () => {
 	const hcResponse = await httpConnector({
 		url: "http://127.0.0.1:3009/greet",
 		method: "GET"
@@ -220,21 +239,71 @@ it('httpConnector test request basic auth', async () => {
 	assert.equal(hcResponse1.data.message, "Missing Authorization Header");
 	assert.equal(hcResponse2.data.message, "Invalid Authentication Credentials");
 	assert.equal(hcResponse3.data.message, "Success");
-	//assert.equal(hc1);
-});
+});*/
 
-it('httpConnector test with cache', async () => {
+function decryptor(value, config) {
+	return Buffer.from(value, 'base64').toString('ascii');
+}
+
+function encryptor(value, config) {
+	return Buffer.from(value).toString('base64');
+}
+
+/*it('httpConnector test with MapFFSCacheManager cache', async () => {
 	const fuInterceptor = new FuInterceptor();
 	const mapFFSCacheManager = new MapFFSCacheManager();
 	mapFFSCacheManager.registerInterceptors(fuInterceptor);
-	const hcResponse = await httpConnector({
+	const hcResponse1 = await httpConnector({
 		url: "http://127.0.0.1:3009/greet",
 		method: "GET",
 		cache: mapFFSCacheManager
 	});
+	const hcResponse2 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "GET",
+		cache: mapFFSCacheManager
+	});
+	const hcResponse3 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "POST",
+		cache: mapFFSCacheManager
+	});
 
-	console.log(mapFFSCacheManager.bucket);
-	assert.equal(hcResponse.status, 200);
-	assert.equal(hcResponse.data, "Hello World!");
+	assert.equal(hcResponse1.status, 200);
+	assert.equal(hcResponse1.data, "Hello World!");
+	assert.equal(hcResponse2.status, 200);
+	assert.equal(hcResponse2.data, "Hello World!");
+	assert.notEqual(hcResponse3.status, 200);
+	assert.notEqual(hcResponse3.data, "Hello World!");
+	assert.equal(hcResponse3.status, 404);
+});*/
+
+it('httpConnector test with CookieFFSCacheManager cache', async () => {
+	const fuInterceptor = new FuInterceptor();
+	const cookieFFSCacheManager = new CookieFFSCacheManager(encryptor, decryptor, null, localStorage);
+	cookieFFSCacheManager.registerInterceptors(fuInterceptor);
+	const hcResponse1 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "GET",
+		cache: cookieFFSCacheManager
+	});
+	const hcResponse2 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "GET",
+		cache: cookieFFSCacheManager
+	});
+	const hcResponse3 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "POST",
+		cache: cookieFFSCacheManager
+	});
+
+	assert.equal(hcResponse1.status, 200);
+	assert.equal(hcResponse1.data, "Hello World!");
+	assert.equal(hcResponse2.status, 200);
+	assert.equal(hcResponse2.data, "Hello World!");
+	assert.notEqual(hcResponse3.status, 200);
+	assert.notEqual(hcResponse3.data, "Hello World!");
+	assert.equal(hcResponse3.status, 404);
 });
 
