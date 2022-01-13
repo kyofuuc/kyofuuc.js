@@ -31,14 +31,10 @@ let port = 3001;
 before(done => {
 	const startServer = (count, done) => {
 		if (count >= 5) return;
-		try {
-			server = app.listen(port, done).on('error', (e) => {
-				console.log('Error happened: ', e.message)
-			});
-		} catch (err) {
+		server = app.listen(port, done).on('error', (e) => {
 			port++;
 			startServer(++count, done);
-		}
+		});
 	}
 	startServer(0, done);
 });

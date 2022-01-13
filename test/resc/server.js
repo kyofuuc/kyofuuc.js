@@ -38,10 +38,12 @@ app.get('/headers', (req, res) => {
 
 app.get('/redirect/:status/:next_status_code', (req, res) => {
 	res.status(req.params.status);
+	const proxyHost = req.headers["x-forwarded-host"];
+	const host = proxyHost ? proxyHost : req.headers.host;
 	if (req.params.status == 302 && req.params.next_status_code == 200) {
-		res.set('location', `http://127.0.0.1:3009/redirect/200/200`);
+		res.set('location', `http://${host}/redirect/200/200`);
 	} else if (req.params.next_status_code) {
-		res.set('location', `http://127.0.0.1:3009/redirect/${req.params.next_status_code}/200`);
+		res.set('location', `http://${host}/redirect/${req.params.next_status_code}/200`);
 	}
 	res.end();
 });
