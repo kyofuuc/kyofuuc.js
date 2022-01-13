@@ -249,24 +249,24 @@ function encryptor(value, config) {
 	return Buffer.from(value).toString('base64');
 }
 
-/*it('httpConnector test with MapFFSCacheManager cache', async () => {
+it('httpConnector test with MapFFSCacheManager cache', async () => {
 	const fuInterceptor = new FuInterceptor();
-	const mapFFSCacheManager = new MapFFSCacheManager();
-	mapFFSCacheManager.registerInterceptors(fuInterceptor);
+	const cacheManager = new MapFFSCacheManager();
+	cacheManager.registerInterceptors(fuInterceptor);
 	const hcResponse1 = await httpConnector({
 		url: "http://127.0.0.1:3009/greet",
 		method: "GET",
-		cache: mapFFSCacheManager
+		cache: cacheManager
 	});
 	const hcResponse2 = await httpConnector({
 		url: "http://127.0.0.1:3009/greet",
 		method: "GET",
-		cache: mapFFSCacheManager
+		cache: cacheManager
 	});
 	const hcResponse3 = await httpConnector({
 		url: "http://127.0.0.1:3009/greet",
 		method: "POST",
-		cache: mapFFSCacheManager
+		cache: cacheManager
 	});
 
 	assert.equal(hcResponse1.status, 200);
@@ -276,26 +276,84 @@ function encryptor(value, config) {
 	assert.notEqual(hcResponse3.status, 200);
 	assert.notEqual(hcResponse3.data, "Hello World!");
 	assert.equal(hcResponse3.status, 404);
-});*/
+});
 
 it('httpConnector test with CookieFFSCacheManager cache', async () => {
 	const fuInterceptor = new FuInterceptor();
-	const cookieFFSCacheManager = new CookieFFSCacheManager(encryptor, decryptor, null, localStorage);
-	cookieFFSCacheManager.registerInterceptors(fuInterceptor);
+	const cacheManager = new CookieFFSCacheManager(encryptor, decryptor, null, localStorage);
+	cacheManager.registerInterceptors(fuInterceptor);
 	const hcResponse1 = await httpConnector({
 		url: "http://127.0.0.1:3009/greet",
 		method: "GET",
-		cache: cookieFFSCacheManager
+		cache: cacheManager
 	});
 	const hcResponse2 = await httpConnector({
 		url: "http://127.0.0.1:3009/greet",
 		method: "GET",
-		cache: cookieFFSCacheManager
+		cache: cacheManager
 	});
 	const hcResponse3 = await httpConnector({
 		url: "http://127.0.0.1:3009/greet",
 		method: "POST",
-		cache: cookieFFSCacheManager
+		cache: cacheManager
+	});
+
+	assert.equal(hcResponse1.status, 200);
+	assert.equal(hcResponse1.data, "Hello World!");
+	assert.equal(hcResponse2.status, 200);
+	assert.equal(hcResponse2.data, "Hello World!");
+	assert.notEqual(hcResponse3.status, 200);
+	assert.notEqual(hcResponse3.data, "Hello World!");
+	assert.equal(hcResponse3.status, 404);
+});
+
+it('httpConnector test with LocalStorageFFSCacheManager cache', async () => {
+	const fuInterceptor = new FuInterceptor();
+	const cacheManager = new LocalStorageFFSCacheManager(encryptor, decryptor, localStorage);
+	cacheManager.registerInterceptors(fuInterceptor);
+	const hcResponse1 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "GET",
+		cache: cacheManager
+	});
+	const hcResponse2 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "GET",
+		cache: cacheManager
+	});
+	const hcResponse3 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "POST",
+		cache: cacheManager
+	});
+
+	assert.equal(hcResponse1.status, 200);
+	assert.equal(hcResponse1.data, "Hello World!");
+	assert.equal(hcResponse2.status, 200);
+	assert.equal(hcResponse2.data, "Hello World!");
+	assert.notEqual(hcResponse3.status, 200);
+	assert.notEqual(hcResponse3.data, "Hello World!");
+	assert.equal(hcResponse3.status, 404);
+});
+
+it('httpConnector test with SessionStorageFFSCacheManager cache', async () => {
+	const fuInterceptor = new FuInterceptor();
+	const cacheManager = new SessionStorageFFSCacheManager(encryptor, decryptor, localStorage);
+	cacheManager.registerInterceptors(fuInterceptor);
+	const hcResponse1 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "GET",
+		cache: cacheManager
+	});
+	const hcResponse2 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "GET",
+		cache: cacheManager
+	});
+	const hcResponse3 = await httpConnector({
+		url: "http://127.0.0.1:3009/greet",
+		method: "POST",
+		cache: cacheManager
 	});
 
 	assert.equal(hcResponse1.status, 200);

@@ -10,20 +10,19 @@
 	/*console.log(kyofuuc.utils);
 	console.log(kyofuuc.KyofuucHttp);
 	console.log(kyofuuc.FuInterceptor);
-	console.log(kyofuuc.cache_managers);*/
+	console.log(kyofuuc.cachemanagers);*/
 
 	/*const fuInterceptor = new kyofuuc.FuInterceptor();
-	const lsFFSCacheManager = new kyofuuc.cache_managers.CookieFFSCacheManager();
+	const lsFFSCacheManager = new kyofuuc.cachemanagers.SessionStorageFFSCacheManager();
 	lsFFSCacheManager.registerInterceptors(fuInterceptor);
 	kyofuuc.utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager });
 	kyofuuc.utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { 
-		cache: lsFFSCacheManager, 
-		response: "{ status: 200 }",
+		cache: lsFFSCacheManager,
 		cacheOptions: {
 			SameSite: "None",
 			Secure: true
 		}
-	});*/
+	}, { status: 200 });*/
 	
 	/*const ws = kyofuuc.ws("wss://echo.websocket.org");*/
 
