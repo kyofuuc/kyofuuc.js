@@ -3,7 +3,7 @@ const assert = require('assert');
 const KyofuucHttp = require('../lib/core/KyofuucHttp');
 const MapFFSCacheManager = require('../lib/cachemanagers/MapFFSCacheManager');
 const FuInterceptor = require('../lib/core/FuInterceptor');
-const ffs = require("../lib/kyofuuc")
+const ffs = require("../lib/kyofuuc");
 
 it('validate kyofuuc base config', () => {
 	const kf = new KyofuucHttp();
@@ -46,15 +46,15 @@ it('kyofuuc request', () => {
 	function reqListener () {
 		console.log(this.responseText);
 	}
-	ffs.get("https://google.com/search").then(function (response) {
+	/*ffs.get("https://google.com/search").then(function (response) {
 		console.log("RESPONSE", response.status)
 	}).catch(function (err) {
-		console.error(err.message)
-	});
+		console.error(err)
+	});*/
 	  
-	  /*var oReq = new XMLHttpRequest();
-	  oReq.addEventListener("load", reqListener);
-	  oReq.open("GET", "http://www.example.org/example.txt");
-	  oReq.send();*/
+	var oReq = new XMLHttpRequest();
+	oReq.addEventListener("load", reqListener);
+	oReq.open("GET", "http://www.example.org/example.txt");
+	oReq.send();
 })
 

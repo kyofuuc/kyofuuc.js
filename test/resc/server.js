@@ -46,16 +46,16 @@ app.get('/redirect/:status/:next_status_code', (req, res) => {
 	res.end();
 });
 
-["post", "patch", "put"].map(method => {
+['delete', 'get', 'head', 'options'].map(method => {
 	app[method](`/${method}`, (req, res) => {
-		res.json(req.body);
+		res.status(204);
 		res.end();
 	});
 });
 
-['delete', 'get', 'head', 'options'].map(method => {
+["post", "patch", "put"].map(method => {
 	app[method](`/${method}`, (req, res) => {
-		res.status(204);
+		res.json(req.body);
 		res.end();
 	});
 });

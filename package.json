@@ -46,6 +46,7 @@
   "homepage": "https://github.com/kyofuuc/kyofuuc.js#readme",
   "dependencies": {},
   "devDependencies": {
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "xmlhttprequest": "^1.8.0"
   }
 }
