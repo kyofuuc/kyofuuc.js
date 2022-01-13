@@ -26,9 +26,21 @@ const LocalStorageFFSCacheManager = require('../lib/cachemanagers/LocalStorageFF
 const SessionStorageFFSCacheManager = require('../lib/cachemanagers/SessionStorageFFSCacheManager');
 
 let server;
+let port = 3001;
 
 before(done => {
-	server = app.listen(3009, done);
+	const startServer = (count, done) => {
+		if (count >= 5) return;
+		try {
+			server = app.listen(port, done).on('error', (e) => {
+				console.log('Error happened: ', e.message)
+			});
+		} catch (err) {
+			port++;
+			startServer(++count, done);
+		}
+	}
+	startServer(0, done);
 });
 
 after(done => {
@@ -39,7 +51,7 @@ after(done => {
 
 it('xhrConnector server greet', async () => {
 	const xcResponse = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET"
 	});
 
@@ -49,7 +61,7 @@ it('xhrConnector server greet', async () => {
 
 it('xhrConnector test delete request', async () => {
 	const xcResponse = await xhrConnector({
-		url: "http://127.0.0.1:3009/delete",
+		url: `http://127.0.0.1:${port}/delete`,
 		method: "DELETE"
 	});
 
@@ -58,7 +70,7 @@ it('xhrConnector test delete request', async () => {
 
 it('xhrConnector test get request', async () => {
 	const xcResponse = await xhrConnector({
-		url: "http://127.0.0.1:3009/get",
+		url: `http://127.0.0.1:${port}/get`,
 		method: "GET"
 	});
 
@@ -67,7 +79,7 @@ it('xhrConnector test get request', async () => {
 
 it('xhrConnector test head request', async () => {
 	const xcResponse = await xhrConnector({
-		url: "http://127.0.0.1:3009/head",
+		url: `http://127.0.0.1:${port}/head`,
 		method: "HEAD"
 	});
 
@@ -76,7 +88,7 @@ it('xhrConnector test head request', async () => {
 
 it('xhrConnector test options request', async () => {
 	const xcResponse = await xhrConnector({
-		url: "http://127.0.0.1:3009/options",
+		url: `http://127.0.0.1:${port}/options`,
 		method: "OPTIONS"
 	});
 
@@ -85,7 +97,7 @@ it('xhrConnector test options request', async () => {
 
 it('xhrConnector test get request headers', async () => {
 	const xcResponse = await xhrConnector({
-		url: "http://127.0.0.1:3009/headers",
+		url: `http://127.0.0.1:${port}/headers`,
 		method: "GET",
 		timeout: 5000
 	});
@@ -99,7 +111,7 @@ it('xhrConnector test get request headers', async () => {
 // enable redirect in xhr
 /*it('xhrConnector test redirect', async () => {
 	const xcResponse1 = await xhrConnector({
-		url: "http://127.0.0.1:3009/redirect/301/301",
+		url: `http://127.0.0.1:${port}/redirect/301/301`,
 		method: "GET",
 		params: {
 			key: "value"
@@ -108,7 +120,7 @@ it('xhrConnector test get request headers', async () => {
 		maxRedirects: 0
 	});
 	const xcResponse2 = await xhrConnector({
-		url: "http://127.0.0.1:3009/redirect/302/302",
+		url: `http://127.0.0.1:${port}/redirect/302/302`,
 		method: "GET",
 		params: {
 			key: "value"
@@ -117,7 +129,7 @@ it('xhrConnector test get request headers', async () => {
 		maxRedirects: 1
 	});
 	const xcResponse3 = await xhrConnector({
-		url: "http://127.0.0.1:3009/redirect/200/200",
+		url: `http://127.0.0.1:${port}/redirect/200/200`,
 		method: "GET",
 		params: {
 			key: "value"
@@ -133,7 +145,7 @@ it('xhrConnector test get request headers', async () => {
 
 it('xhrConnector test redirect with redirectsData', async () => {
 	const xcResponse = await xhrConnector({
-		url: "http://127.0.0.1:3009/redirect/301/302",
+		url: `http://127.0.0.1:${port}/redirect/301/302`,
 		method: "GET",
 		params: {
 			key: "value"
@@ -151,7 +163,7 @@ it('xhrConnector test redirect with redirectsData', async () => {
 
 it('xhrConnector test post request', async () => {
 	const xcResponse = await xhrConnector({
-		url: "http://127.0.0.1:3009/post",
+		url: `http://127.0.0.1:${port}/post`,
 		method: "POST",
 		headers: {
 			"User-Agent": "kyofuuc/0.01",
@@ -171,7 +183,7 @@ it('xhrConnector test post request', async () => {
 
 it('xhrConnector test patch request', async () => {
 	const xcResponse = await xhrConnector({
-		url: "http://127.0.0.1:3009/patch",
+		url: `http://127.0.0.1:${port}/patch`,
 		method: "PATCH",
 		headers: {
 			"User-Agent": "kyofuuc/0.01",
@@ -191,7 +203,7 @@ it('xhrConnector test patch request', async () => {
 
 it('xhrConnector test put request', async () => {
 	const xcResponse = await xhrConnector({
-		url: "http://127.0.0.1:3009/put",
+		url: `http://127.0.0.1:${port}/put`,
 		method: "PUT",
 		headers: {
 			"User-Agent": "kyofuuc/0.01",
@@ -211,12 +223,12 @@ it('xhrConnector test put request', async () => {
 
 it('xhrConnector test request basic auth', async () => {
 	const xcResponse1 = await xhrConnector({
-		url: "http://127.0.0.1:3009/profile",
+		url: `http://127.0.0.1:${port}/profile`,
 		method: "GET",
 		responseType: "json"
 	});
 	const xcResponse2 = await xhrConnector({
-		url: "http://127.0.0.1:3009/profile",
+		url: `http://127.0.0.1:${port}/profile`,
 		method: "GET",
 		auth: {
 			username: "test.wrong@mail.com",
@@ -225,7 +237,7 @@ it('xhrConnector test request basic auth', async () => {
 		responseType: "json"
 	});
 	const xcResponse3 = await xhrConnector({
-		url: "http://127.0.0.1:3009/profile",
+		url: `http://127.0.0.1:${port}/profile`,
 		method: "GET",
 		auth: {
 			username: "test@mail.com",
@@ -255,17 +267,17 @@ it('xhrConnector test with MapFFSCacheManager cache', async () => {
 	const cacheManager = new MapFFSCacheManager();
 	cacheManager.registerInterceptors(fuInterceptor);
 	const xcResponse1 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
 		cache: cacheManager
 	});
 	const xcResponse2 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
 		cache: cacheManager
 	});
 	const xcResponse3 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
 		cache: cacheManager
 	});
@@ -284,17 +296,17 @@ it('xhrConnector test with CookieFFSCacheManager cache', async () => {
 	const cacheManager = new CookieFFSCacheManager(encryptor, decryptor, null, localStorage);
 	cacheManager.registerInterceptors(fuInterceptor);
 	const xcResponse1 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
 		cache: cacheManager
 	});
 	const xcResponse2 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
 		cache: cacheManager
 	});
 	const xcResponse3 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
 		cache: cacheManager
 	});
@@ -313,17 +325,17 @@ it('xhrConnector test with LocalStorageFFSCacheManager cache', async () => {
 	const cacheManager = new LocalStorageFFSCacheManager(encryptor, decryptor, localStorage);
 	cacheManager.registerInterceptors(fuInterceptor);
 	const xcResponse1 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
 		cache: cacheManager
 	});
 	const xcResponse2 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
 		cache: cacheManager
 	});
 	const xcResponse3 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
 		cache: cacheManager
 	});
@@ -342,17 +354,17 @@ it('xhrConnector test with SessionStorageFFSCacheManager cache', async () => {
 	const cacheManager = new SessionStorageFFSCacheManager(encryptor, decryptor, localStorage);
 	cacheManager.registerInterceptors(fuInterceptor);
 	const xcResponse1 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
 		cache: cacheManager
 	});
 	const xcResponse2 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
 		cache: cacheManager
 	});
 	const xcResponse3 = await xhrConnector({
-		url: "http://127.0.0.1:3009/greet",
+		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
 		cache: cacheManager
 	});
