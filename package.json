@@ -4,7 +4,7 @@
   "description": "Powerful HTTP request for the browser and node.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --timeout 10000"
   },
   "repository": {
     "type": "git",

@@ -12,7 +12,7 @@ it('defaults.getDefaultHttpConnector', () => {
 
 it('defaults.httpConfig', () => {
 	assert.deepEqual(defaults.httpConfig.connector, defaults.getDefaultHttpConnector());
-	assert.deepEqual(defaults.httpConfig.timeout, 0);
+	assert.deepEqual(defaults.httpConfig.timeout, 5000);
 	assert.deepEqual(defaults.httpConfig.xsrfCookieName, 'XSRF-TOKEN');
 	assert.deepEqual(defaults.httpConfig.xsrfHeaderName, 'X-XSRF-TOKEN');
 	assert.deepEqual(defaults.httpConfig.maxContentLength, -1);

@@ -1,22 +1,22 @@
 
-try {
-	localStorage.setItem("FFS_TEST_CACHE_MANAGE", "TEST");
-	localStorage.removeItem("FFS_TEST_CACHE_MANAGE");
-} catch(e) {
-	var localStorage = {};
-	localStorage.getItem = function getItem(key) {
-		return localStorage[key];
-	};
-	localStorage.setItem = function setItem(key, value) {
-		localStorage[key] = value;
-	};
-	localStorage.removeItem = function removeItem(key) {
-		delete localStorage[key];
-	};
-}
+const utils = require('../lib/utils');
+const KFLocalStorageImpl = utils.presentElseImport(typeof localStorage, 
+	() => localStorage, 
+	() => {
+		const localStorageImpl = {};
+		localStorageImpl.getItem = function getItem(key) {
+			return localStorageImpl[key];
+		};
+		localStorageImpl.setItem = function setItem(key, value) {
+			localStorageImpl[key] = value;
+		};
+		localStorageImpl.removeItem = function removeItem(key) {
+			delete localStorageImpl[key];
+		};
+		return localStorageImpl;
+	});
 
 const assert = require('assert');
-const utils = require('../lib/utils');
 const FuInterceptor = require('../lib/core/FuInterceptor');
 const MapFFSCacheManager = require('../lib/cachemanagers/MapFFSCacheManager');
 const CookieFFSCacheManager = require('../lib/cachemanagers/CookieFFSCacheManager');
@@ -86,8 +86,8 @@ it('MapFFSCacheManager test Alt', () => {
 
 it('LocalStorageFFSCacheManager test', () => {
 	const fuInterceptor = new FuInterceptor();
-	localStorage.removeItem("undefined_GET_SINGLE");
-	const lsFFSCacheManager = new LocalStorageFFSCacheManager(null, null, localStorage);
+	KFLocalStorageImpl.removeItem("undefined_GET_SINGLE");
+	const lsFFSCacheManager = new LocalStorageFFSCacheManager(null, null, KFLocalStorageImpl);
 	lsFFSCacheManager.registerInterceptors(fuInterceptor);
 
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), []);
@@ -98,7 +98,7 @@ it('LocalStorageFFSCacheManager test', () => {
 		key: "undefined_GET_SINGLE",
 		value: { status: 200 }
 	}]);
-	assert.deepEqual(localStorage.getItem("undefined_GET_SINGLE"), JSON.safeStringify({ value: { status: 200 } }));
+	assert.deepEqual(KFLocalStorageImpl.getItem("undefined_GET_SINGLE"), JSON.safeStringify({ value: { status: 200 } }));
 	lsFFSCacheManager.set({ key: "test.com_SINGLE" }, { status: 300 });
 	assert.deepEqual(lsFFSCacheManager.get({ key: "undefined_GET_SINGLE" }), { status: 200 });
 	assert.deepEqual(lsFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
@@ -109,8 +109,8 @@ it('LocalStorageFFSCacheManager test', () => {
 
 it('LocalStorageFFSCacheManager test with encryptor and decryptor', () => {
 	const fuInterceptor = new FuInterceptor();
-	localStorage.removeItem("undefined_GET_SINGLE");
-	const lsFFSCacheManager = new LocalStorageFFSCacheManager(encryptor, decryptor, localStorage);
+	KFLocalStorageImpl.removeItem("undefined_GET_SINGLE");
+	const lsFFSCacheManager = new LocalStorageFFSCacheManager(encryptor, decryptor, KFLocalStorageImpl);
 	lsFFSCacheManager.registerInterceptors(fuInterceptor);
 
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager }), []);
@@ -121,7 +121,7 @@ it('LocalStorageFFSCacheManager test with encryptor and decryptor', () => {
 		key: "undefined_GET_SINGLE",
 		value: { status: 200 }
 	}]);
-	assert.deepEqual(localStorage.getItem("undefined_GET_SINGLE"), encryptor(JSON.safeStringify({ value: { status: 200 } })));
+	assert.deepEqual(KFLocalStorageImpl.getItem("undefined_GET_SINGLE"), encryptor(JSON.safeStringify({ value: { status: 200 } })));
 	lsFFSCacheManager.set({ key: "test.com_SINGLE" }, { status: 300 });
 	assert.deepEqual(lsFFSCacheManager.get({ key: "undefined_GET_SINGLE" }), { status: 200 });
 	assert.deepEqual(lsFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
@@ -132,8 +132,8 @@ it('LocalStorageFFSCacheManager test with encryptor and decryptor', () => {
 
 it('SessionStorageFFSCacheManager test', () => {
 	const fuInterceptor = new FuInterceptor();
-	localStorage.removeItem("undefined_GET_SINGLE");
-	const ssFFSCacheManager = new SessionStorageFFSCacheManager(null, null, localStorage);
+	KFLocalStorageImpl.removeItem("undefined_GET_SINGLE");
+	const ssFFSCacheManager = new SessionStorageFFSCacheManager(null, null, KFLocalStorageImpl);
 	ssFFSCacheManager.registerInterceptors(fuInterceptor);
 
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), []);
@@ -144,7 +144,7 @@ it('SessionStorageFFSCacheManager test', () => {
 		key: "undefined_GET_SINGLE",
 		value: { status: 200 }
 	}]);
-	assert.deepEqual(localStorage.getItem("undefined_GET_SINGLE"), JSON.safeStringify({ value: { status: 200 } }));
+	assert.deepEqual(KFLocalStorageImpl.getItem("undefined_GET_SINGLE"), JSON.safeStringify({ value: { status: 200 } }));
 	ssFFSCacheManager.set({ key: "test.com_SINGLE" }, { status: 300 });
 	assert.deepEqual(ssFFSCacheManager.get({ key: "undefined_GET_SINGLE" }), { status: 200 });
 	assert.deepEqual(ssFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
@@ -155,8 +155,8 @@ it('SessionStorageFFSCacheManager test', () => {
 
 it('SessionStorageFFSCacheManager test with encryptor and decryptor', () => {
 	const fuInterceptor = new FuInterceptor();
-	localStorage.removeItem("undefined_GET_SINGLE");
-	const ssFFSCacheManager = new SessionStorageFFSCacheManager(encryptor, decryptor, localStorage);
+	KFLocalStorageImpl.removeItem("undefined_GET_SINGLE");
+	const ssFFSCacheManager = new SessionStorageFFSCacheManager(encryptor, decryptor, KFLocalStorageImpl);
 	ssFFSCacheManager.registerInterceptors(fuInterceptor);
 
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: ssFFSCacheManager }), []);
@@ -167,7 +167,7 @@ it('SessionStorageFFSCacheManager test with encryptor and decryptor', () => {
 		key: "undefined_GET_SINGLE",
 		value: { status: 200 }
 	}]);
-	assert.deepEqual(localStorage.getItem("undefined_GET_SINGLE"), encryptor(JSON.safeStringify({ value: { status: 200 } })));
+	assert.deepEqual(KFLocalStorageImpl.getItem("undefined_GET_SINGLE"), encryptor(JSON.safeStringify({ value: { status: 200 } })));
 	ssFFSCacheManager.set({ key: "test.com_SINGLE" }, { status: 300 });
 	assert.deepEqual(ssFFSCacheManager.get({ key: "undefined_GET_SINGLE" }), { status: 200 });
 	assert.deepEqual(ssFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
@@ -178,14 +178,14 @@ it('SessionStorageFFSCacheManager test with encryptor and decryptor', () => {
 
 it('CookieFFSCacheManager test', () => {
 	const fuInterceptor = new FuInterceptor();
-	localStorage.removeItem("undefined_GET_SINGLE");
-	const cookieFFSCacheManager = new CookieFFSCacheManager(null, null, null, localStorage);
+	KFLocalStorageImpl.removeItem("undefined_GET_SINGLE");
+	const cookieFFSCacheManager = new CookieFFSCacheManager(null, null, null, KFLocalStorageImpl);
 	cookieFFSCacheManager.registerInterceptors(fuInterceptor);
 
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "POST_RESPONSE", { cache: cookieFFSCacheManager }, { status: 200 }), []);
 	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
-	assert.deepEqual(localStorage.getItem("undefined_GET_SINGLE"), JSON.safeStringify({ value: { status: 200 } }));
+	assert.deepEqual(KFLocalStorageImpl.getItem("undefined_GET_SINGLE"), JSON.safeStringify({ value: { status: 200 } }));
 	cookieFFSCacheManager.set({ key: "test.com_SINGLE" }, { status: 300 });
 	assert.deepEqual(cookieFFSCacheManager.get({ key: "undefined_GET_SINGLE" }), { status: 200 });
 	assert.deepEqual(cookieFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });
@@ -196,14 +196,14 @@ it('CookieFFSCacheManager test', () => {
 
 it('CookieFFSCacheManager test with encryptor and decryptor', () => {
 	const fuInterceptor = new FuInterceptor();
-	localStorage.removeItem("undefined_GET_SINGLE");
-	const cookieFFSCacheManager = new CookieFFSCacheManager(encryptor, decryptor, null, localStorage);
+	KFLocalStorageImpl.removeItem("undefined_GET_SINGLE");
+	const cookieFFSCacheManager = new CookieFFSCacheManager(encryptor, decryptor, null, KFLocalStorageImpl);
 	cookieFFSCacheManager.registerInterceptors(fuInterceptor);
 
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
 	assert.deepEqual(utils.invokeForEachInterceptorType(fuInterceptor, "POST_RESPONSE", { cache: cookieFFSCacheManager }, { status: 200 }), []);
 	assert.notEqual(utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: cookieFFSCacheManager }), []);
-	assert.deepEqual(localStorage.getItem("undefined_GET_SINGLE"), encryptor(JSON.safeStringify({ value: { status: 200 } })));
+	assert.deepEqual(KFLocalStorageImpl.getItem("undefined_GET_SINGLE"), encryptor(JSON.safeStringify({ value: { status: 200 } })));
 	cookieFFSCacheManager.set({ key: "test.com_SINGLE" }, { status: 300 });
 	assert.deepEqual(cookieFFSCacheManager.get({ key: "undefined_GET_SINGLE" }), { status: 200 });
 	assert.deepEqual(cookieFFSCacheManager.get({ key: "test.com_SINGLE" }), { status: 300 });

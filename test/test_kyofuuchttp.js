@@ -1,9 +1,30 @@
 
 const assert = require('assert');
+const app = require("./resc/server");
 const KyofuucHttp = require('../lib/core/KyofuucHttp');
 const MapFFSCacheManager = require('../lib/cachemanagers/MapFFSCacheManager');
 const FuInterceptor = require('../lib/core/FuInterceptor');
 const ffs = require("../lib/kyofuuc");
+
+let server;
+let port = 3001;
+
+before(done => {
+	const startServer = (count, done) => {
+		if (count >= 5) return;
+		server = app.listen(port, done).on('error', (e) => {
+			port++;
+			startServer(++count, done);
+		});
+	}
+	startServer(0, done);
+});
+
+after(done => {
+	if (server) {
+		server.close(done);
+	}
+});
 
 it('validate kyofuuc base config', () => {
 	const kf = new KyofuucHttp();
@@ -42,19 +63,128 @@ it('validate kyofuuc httpInterceptor', () => {
     assert.equal(kf.httpInterceptor.handlers[3], undefined);
 });
 
-it('kyofuuc request', () => {
-	function reqListener () {
-		console.log(this.responseText);
-	}
-	/*ffs.get("https://google.com/search").then(function (response) {
-		console.log("RESPONSE", response.status)
-	}).catch(function (err) {
-		console.error(err)
-	});*/
-	  
-	var oReq = new XMLHttpRequest();
-	oReq.addEventListener("load", reqListener);
-	oReq.open("GET", "http://www.example.org/example.txt");
-	oReq.send();
-})
+it('kyofuuc request server greet', async () => {
+	const ffsResponse = await ffs.request(`http://127.0.0.1:${port}/greet`, {
+		method: "get",
+		responseType: "text"
+	});
+	
+	assert.equal(ffsResponse.status, 200);
+	assert.equal(ffsResponse.data, "Hello World!");
+});
+
+it('kyofuuc request delete, get, head, options', async () => {
+	const ffsResponseDelete = await ffs.request(`http://127.0.0.1:${port}/delete`, {
+		method: "delete",
+		responseType: "text"
+	});
+	const ffsResponseGet = await ffs.request(`http://127.0.0.1:${port}/get`, {
+		method: "get",
+		responseType: "text"
+	});
+	const ffsResponseHead = await ffs.request(`http://127.0.0.1:${port}/head`, {
+		method: "head",
+		responseType: "text"
+	});
+	const ffsResponseOptions = await ffs.request(`http://127.0.0.1:${port}/options`, {
+		method: "options",
+		responseType: "text"
+	});
+	
+	assert.equal(ffsResponseDelete.status, 204);
+	assert.equal(ffsResponseGet.status, 204);
+	assert.equal(ffsResponseHead.status, 204);
+	assert.equal(ffsResponseOptions.status, 204);
+});
+
+it('kyofuuc request post, patch, put', async () => {
+	const ffsResponsePost = await ffs.request({
+		url: `http://127.0.0.1:${port}/post`,
+		method: "POST",
+		headers: {
+			"User-Agent": "kyofuuc/0.01",
+			'Content-Type': 'application/json'
+		},
+		data: {
+			email: "test@mail.com",
+			password: "pass"
+		},
+		responseType: "json"
+	});
+	const ffsResponsePatch = await ffs.request({
+		url: `http://127.0.0.1:${port}/patch`,
+		method: "PATCH",
+		headers: {
+			"User-Agent": "kyofuuc/0.01",
+			'Content-Type': 'application/json'
+		},
+		data: {
+			email: "test@mail.com",
+			password: "pass"
+		},
+		responseType: "json"
+	});
+	const ffsResponsePut = await ffs.request({
+		url: `http://127.0.0.1:${port}/put`,
+		method: "PUT",
+		headers: {
+			"User-Agent": "kyofuuc/0.01",
+			'Content-Type': 'application/json'
+		},
+		data: {
+			email: "test@mail.com",
+			password: "pass"
+		},
+		responseType: "json"
+	});
+
+	assert.equal(ffsResponsePost.status, 200);
+	assert.equal(ffsResponsePost.data.email, "test@mail.com");
+	assert.equal(ffsResponsePost.data.password, "pass");
+	assert.equal(ffsResponsePatch.status, 200);
+	assert.equal(ffsResponsePatch.data.email, "test@mail.com");
+	assert.equal(ffsResponsePatch.data.password, "pass");
+	assert.equal(ffsResponsePut.status, 200);
+	assert.equal(ffsResponsePut.data.email, "test@mail.com");
+	assert.equal(ffsResponsePut.data.password, "pass");
+});
+
+it('kyofuuc request basic auth', async () => {
+	const ffsResponse1 = await ffs.request({
+		url: `http://127.0.0.1:${port}/profile`,
+		method: "GET",
+		responseType: "json",
+		validateStatus: (status) => {
+			return status >= 200 && status < 500;
+		}
+	});
+	const ffsResponse2 = await ffs.request({
+		url: `http://127.0.0.1:${port}/profile`,
+		method: "GET",
+		auth: {
+			username: "test.wrong@mail.com",
+			password: "password"
+		},
+		responseType: "json",
+		validateStatus: (status) => {
+			return status >= 200 && status < 500;
+		}
+	});
+	const ffsResponse3 = await ffs.request({
+		url: `http://127.0.0.1:${port}/profile`,
+		method: "GET",
+		auth: {
+			username: "test@mail.com",
+			password: "password"
+		},
+		responseType: "json"
+	});
+
+	assert.equal(ffsResponse1.status, 400);
+	assert.equal(ffsResponse2.status, 401);
+	assert.equal(ffsResponse3.status, 200);
+	assert.equal(ffsResponse1.data.message, "Missing Authorization Header");
+	assert.equal(ffsResponse2.data.message, "Invalid Authentication Credentials");
+	assert.equal(ffsResponse3.data.message, "Success");
+});
 
