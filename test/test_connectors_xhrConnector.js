@@ -265,7 +265,8 @@ it('xhrConnector test with MapFFSCacheManager cache', async () => {
 	const xcResponse1 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 	const xcResponse2 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
@@ -275,13 +276,17 @@ it('xhrConnector test with MapFFSCacheManager cache', async () => {
 	const xcResponse3 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 
 	assert.equal(xcResponse1.status, 200);
+	assert.equal(xcResponse1.isFromCache, false);
 	assert.equal(xcResponse1.data, "Hello World!");
 	assert.equal(xcResponse2.status, 200);
+	assert.equal(xcResponse2.isFromCache, true);
 	assert.equal(xcResponse2.data, "Hello World!");
+	assert.equal(xcResponse3.isFromCache, false);
 	assert.notEqual(xcResponse3.status, 200);
 	assert.notEqual(xcResponse3.data, "Hello World!");
 	assert.equal(xcResponse3.status, 404);
@@ -294,7 +299,8 @@ it('xhrConnector test with CookieFFSCacheManager cache', async () => {
 	const xcResponse1 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 	const xcResponse2 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
@@ -304,13 +310,17 @@ it('xhrConnector test with CookieFFSCacheManager cache', async () => {
 	const xcResponse3 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 
 	assert.equal(xcResponse1.status, 200);
+	assert.equal(xcResponse1.isFromCache, false);
 	assert.equal(xcResponse1.data, "Hello World!");
 	assert.equal(xcResponse2.status, 200);
+	assert.equal(xcResponse2.isFromCache, true);
 	assert.equal(xcResponse2.data, "Hello World!");
+	assert.equal(xcResponse3.isFromCache, false);
 	assert.notEqual(xcResponse3.status, 200);
 	assert.notEqual(xcResponse3.data, "Hello World!");
 	assert.equal(xcResponse3.status, 404);
@@ -323,7 +333,8 @@ it('xhrConnector test with LocalStorageFFSCacheManager cache', async () => {
 	const xcResponse1 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 	const xcResponse2 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
@@ -333,13 +344,17 @@ it('xhrConnector test with LocalStorageFFSCacheManager cache', async () => {
 	const xcResponse3 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 
 	assert.equal(xcResponse1.status, 200);
+	assert.equal(xcResponse1.isFromCache, false);
 	assert.equal(xcResponse1.data, "Hello World!");
 	assert.equal(xcResponse2.status, 200);
+	assert.equal(xcResponse2.isFromCache, true);
 	assert.equal(xcResponse2.data, "Hello World!");
+	assert.equal(xcResponse3.isFromCache, false);
 	assert.notEqual(xcResponse3.status, 200);
 	assert.notEqual(xcResponse3.data, "Hello World!");
 	assert.equal(xcResponse3.status, 404);
@@ -352,7 +367,8 @@ it('xhrConnector test with SessionStorageFFSCacheManager cache', async () => {
 	const xcResponse1 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 	const xcResponse2 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
@@ -362,13 +378,17 @@ it('xhrConnector test with SessionStorageFFSCacheManager cache', async () => {
 	const xcResponse3 = await xhrConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 
 	assert.equal(xcResponse1.status, 200);
+	assert.equal(xcResponse1.isFromCache, false);
 	assert.equal(xcResponse1.data, "Hello World!");
 	assert.equal(xcResponse2.status, 200);
+	assert.equal(xcResponse2.isFromCache, true);
 	assert.equal(xcResponse2.data, "Hello World!");
+	assert.equal(xcResponse3.isFromCache, false);
 	assert.notEqual(xcResponse3.status, 200);
 	assert.notEqual(xcResponse3.data, "Hello World!");
 	assert.equal(xcResponse3.status, 404);

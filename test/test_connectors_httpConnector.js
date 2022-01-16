@@ -264,7 +264,8 @@ it('httpConnector test with MapFFSCacheManager cache', async () => {
 	const hcResponse1 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 	const hcResponse2 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
@@ -274,13 +275,17 @@ it('httpConnector test with MapFFSCacheManager cache', async () => {
 	const hcResponse3 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 
 	assert.equal(hcResponse1.status, 200);
+	assert.equal(hcResponse1.isFromCache, false);
 	assert.equal(hcResponse1.data, "Hello World!");
 	assert.equal(hcResponse2.status, 200);
+	assert.equal(hcResponse2.isFromCache, true);
 	assert.equal(hcResponse2.data, "Hello World!");
+	assert.equal(hcResponse3.isFromCache, false);
 	assert.notEqual(hcResponse3.status, 200);
 	assert.notEqual(hcResponse3.data, "Hello World!");
 	assert.equal(hcResponse3.status, 404);
@@ -293,7 +298,8 @@ it('httpConnector test with CookieFFSCacheManager cache', async () => {
 	const hcResponse1 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 	const hcResponse2 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
@@ -303,13 +309,17 @@ it('httpConnector test with CookieFFSCacheManager cache', async () => {
 	const hcResponse3 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 
 	assert.equal(hcResponse1.status, 200);
+	assert.equal(hcResponse1.isFromCache, false);
 	assert.equal(hcResponse1.data, "Hello World!");
 	assert.equal(hcResponse2.status, 200);
+	assert.equal(hcResponse2.isFromCache, true);
 	assert.equal(hcResponse2.data, "Hello World!");
+	assert.equal(hcResponse3.isFromCache, false);
 	assert.notEqual(hcResponse3.status, 200);
 	assert.notEqual(hcResponse3.data, "Hello World!");
 	assert.equal(hcResponse3.status, 404);
@@ -322,7 +332,8 @@ it('httpConnector test with LocalStorageFFSCacheManager cache', async () => {
 	const hcResponse1 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 	const hcResponse2 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
@@ -332,13 +343,17 @@ it('httpConnector test with LocalStorageFFSCacheManager cache', async () => {
 	const hcResponse3 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 
 	assert.equal(hcResponse1.status, 200);
+	assert.equal(hcResponse1.isFromCache, false);
 	assert.equal(hcResponse1.data, "Hello World!");
 	assert.equal(hcResponse2.status, 200);
+	assert.equal(hcResponse2.isFromCache, true);
 	assert.equal(hcResponse2.data, "Hello World!");
+	assert.equal(hcResponse3.isFromCache, false);
 	assert.notEqual(hcResponse3.status, 200);
 	assert.notEqual(hcResponse3.data, "Hello World!");
 	assert.equal(hcResponse3.status, 404);
@@ -351,7 +366,8 @@ it('httpConnector test with SessionStorageFFSCacheManager cache', async () => {
 	const hcResponse1 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "GET",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 	const hcResponse2 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
@@ -361,13 +377,17 @@ it('httpConnector test with SessionStorageFFSCacheManager cache', async () => {
 	const hcResponse3 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
 		method: "POST",
-		cache: cacheManager
+		cache: cacheManager,
+		refreshCache: true
 	});
 
 	assert.equal(hcResponse1.status, 200);
+	assert.equal(hcResponse1.isFromCache, false);
 	assert.equal(hcResponse1.data, "Hello World!");
 	assert.equal(hcResponse2.status, 200);
+	assert.equal(hcResponse2.isFromCache, true);
 	assert.equal(hcResponse2.data, "Hello World!");
+	assert.equal(hcResponse3.isFromCache, false);
 	assert.notEqual(hcResponse3.status, 200);
 	assert.notEqual(hcResponse3.data, "Hello World!");
 	assert.equal(hcResponse3.status, 404);
