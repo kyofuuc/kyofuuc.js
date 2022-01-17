@@ -6,12 +6,12 @@ it('initialize FuInterceptor and validate register', () => {
 	const fuInterceptor = new FuInterceptor();
 
     assert.equal(fuInterceptor.handlers.length, 0);
-	assert.equal(fuInterceptor.register("PRE_REQUEST", function cb(options) {}, { synchronous: false}), 0);
-	assert.equal(fuInterceptor.register("POST_REQUEST", function cb(options) {}, { when: function w(config) { return true; }}), 1);
+	assert.equal(fuInterceptor.register("HTTP_PRE_REQUEST", function cb(options) {}, { synchronous: false}), 0);
+	assert.equal(fuInterceptor.register("HTTP_POST_REQUEST", function cb(options) {}, { when: function w(config) { return true; }}), 1);
     assert.equal(fuInterceptor.handlers.length, 2);
 
-	assert.equal(fuInterceptor.handlers[0].type, "PRE_REQUEST");
-	assert.equal(fuInterceptor.handlers[1].type, "POST_REQUEST");
+	assert.equal(fuInterceptor.handlers[0].type, "HTTP_PRE_REQUEST");
+	assert.equal(fuInterceptor.handlers[1].type, "HTTP_POST_REQUEST");
 	assert.equal(fuInterceptor.handlers[0].options.when, undefined);
 	assert.notEqual(fuInterceptor.handlers[1].options.when, undefined);
 	assert.notEqual(fuInterceptor.handlers[1].options.when({}), false);
@@ -29,8 +29,8 @@ it('typed FuInterceptor register*Request', () => {
     assert.equal(fuInterceptor.registerPreRequest(function cb(options) {}, { synchronous: false}), 0);
     assert.equal(fuInterceptor.registerPostRequest(function cb(options) {}, { when: function w(config) { return true; }}), 1);
 
-	assert.equal(fuInterceptor.handlers[0].type, "PRE_REQUEST");
-	assert.equal(fuInterceptor.handlers[1].type, "POST_REQUEST");
+	assert.equal(fuInterceptor.handlers[0].type, "HTTP_PRE_REQUEST");
+	assert.equal(fuInterceptor.handlers[1].type, "HTTP_POST_REQUEST");
 	assert.equal(fuInterceptor.handlers[0].options.when, undefined);
 	assert.notEqual(fuInterceptor.handlers[1].options.when, undefined);
 	assert.notEqual(fuInterceptor.handlers[1].options.when({}), false);
@@ -50,10 +50,10 @@ it('typed FuInterceptor register*Response', () => {
     assert.equal(fuInterceptor.registerPreResponse(function cb(options) {}, { synchronous: false}), 2);
     assert.equal(fuInterceptor.registerPostResponse(function cb(options) {}, { when: function w(config) { return true; }}), 3);
 
-	assert.notEqual(fuInterceptor.handlers[0].type, "PRE_RESPONSE");
-	assert.notEqual(fuInterceptor.handlers[1].type, "POST_RESPONSE");
-	assert.equal(fuInterceptor.handlers[2].type, "PRE_RESPONSE");
-	assert.equal(fuInterceptor.handlers[3].type, "POST_RESPONSE");
+	assert.notEqual(fuInterceptor.handlers[0].type, "HTTP_PRE_RESPONSE");
+	assert.notEqual(fuInterceptor.handlers[1].type, "HTTP_POST_RESPONSE");
+	assert.equal(fuInterceptor.handlers[2].type, "HTTP_PRE_RESPONSE");
+	assert.equal(fuInterceptor.handlers[3].type, "HTTP_POST_RESPONSE");
 	assert.equal(fuInterceptor.handlers[0].options.when, undefined);
 	assert.notEqual(fuInterceptor.handlers[1].options.when, undefined);
 	assert.notEqual(fuInterceptor.handlers[1].options.when({}), false);
@@ -68,8 +68,8 @@ it('FuInterceptor unRegister', () => {
 	const fuInterceptor = new FuInterceptor();
 	
     assert.equal(fuInterceptor.handlers.length, 0);
-	assert.equal(fuInterceptor.register("PRE_REQUEST", function cb(options) {}, { synchronous: false}), 0);
-	assert.equal(fuInterceptor.register("POST_REQUEST", function cb(options) {}, { when: function w(config) { return true; }}), 1);
+	assert.equal(fuInterceptor.register("HTTP_PRE_REQUEST", function cb(options) {}, { synchronous: false}), 0);
+	assert.equal(fuInterceptor.register("HTTP_POST_REQUEST", function cb(options) {}, { when: function w(config) { return true; }}), 1);
     assert.equal(fuInterceptor.registerPreRequest(function cb(options) {}, { synchronous: false}), 2);
     assert.equal(fuInterceptor.registerPostRequest(function cb(options) {}, { when: function w(config) { return true; }}), 3);
     assert.equal(fuInterceptor.registerPreResponse(function cb(options) {}, { synchronous: false}), 4);
@@ -81,7 +81,7 @@ it('FuInterceptor unRegister', () => {
     assert.notEqual(fuInterceptor.handlers.length, 2);
     assert.equal(fuInterceptor.handlers.length, 6);
 
-	assert.equal(fuInterceptor.handlers[0].type, "PRE_REQUEST");
+	assert.equal(fuInterceptor.handlers[0].type, "HTTP_PRE_REQUEST");
 	assert.equal(fuInterceptor.handlers[1], undefined);
 	assert.equal(fuInterceptor.handlers[0].options.when, undefined);
 	assert.equal(fuInterceptor.handlers[4].options.when, undefined);
@@ -93,8 +93,8 @@ it('FuInterceptor forEach', () => {
 	const fuInterceptor = new FuInterceptor();
 	
     assert.equal(fuInterceptor.handlers.length, 0);
-	assert.equal(fuInterceptor.register("PRE_REQUEST", function cb(options) {}, { synchronous: false}), 0);
-	assert.equal(fuInterceptor.register("POST_REQUEST", function cb(options) {}, { when: function w(config) { return true; }}), 1);
+	assert.equal(fuInterceptor.register("HTTP_PRE_REQUEST", function cb(options) {}, { synchronous: false}), 0);
+	assert.equal(fuInterceptor.register("HTTP_POST_REQUEST", function cb(options) {}, { when: function w(config) { return true; }}), 1);
     assert.equal(fuInterceptor.registerPreRequest(function cb(options) {}, { synchronous: false}), 2);
     assert.equal(fuInterceptor.registerPostRequest(function cb(options) {}, { when: function w(config) { return true; }}), 3);
     assert.equal(fuInterceptor.registerPreResponse(function cb(options) {}, { synchronous: false}), 4);
@@ -108,9 +108,11 @@ it('FuInterceptor forEach', () => {
 		}
 	});
 	
-	fuInterceptor.forEach(function(handler) { assert.equal(handler.type, "PRE_REQUEST"); }, "PRE_REQUEST");
-	fuInterceptor.forEach(function(handler) { assert.equal(handler.type, "POST_REQUEST"); }, "POST_REQUEST");
-	fuInterceptor.forEach(function(handler) { assert.equal(handler.type, "PRE_RESPONSE"); }, "PRE_RESPONSE");
-	fuInterceptor.forEach(function(handler) { assert.equal(handler.type, "POST_RESPONSE"); }, "POST_RESPONSE");
+	fuInterceptor.forEach(function(handler) { assert.equal(handler.type, "HTTP_PRE_REQUEST"); }, "HTTP_PRE_REQUEST");
+	fuInterceptor.forEach(function(handler) { assert.equal(handler.type, "HTTP_POST_REQUEST"); }, "HTTP_POST_REQUEST");
+	fuInterceptor.forEach(function(handler) { assert.equal(handler.type, "HTTP_PRE_RESPONSE"); }, "HTTP_PRE_RESPONSE");
+	fuInterceptor.forEach(function(handler) { assert.equal(handler.type, "HTTP_POST_RESPONSE"); }, "HTTP_POST_RESPONSE");
 });
 
+
+// TODO: Add test for WS_* interceptors

@@ -15,8 +15,8 @@
 	/*const fuInterceptor = new kyofuuc.FuInterceptor();
 	const lsFFSCacheManager = new kyofuuc.cachemanagers.SessionStorageFFSCacheManager();
 	lsFFSCacheManager.registerInterceptors(fuInterceptor);
-	kyofuuc.utils.invokeForEachInterceptorType(fuInterceptor, "PRE_REQUEST", { cache: lsFFSCacheManager });
-	kyofuuc.utils.invokeForEachInterceptorType(fuInterceptor, "PRE_RESPONSE", { 
+	kyofuuc.utils.invokeForEachInterceptorType(fuInterceptor, "HTTP_PRE_REQUEST", { cache: lsFFSCacheManager });
+	kyofuuc.utils.invokeForEachInterceptorType(fuInterceptor, "HTTP_PRE_RESPONSE", { 
 		cache: lsFFSCacheManager,
 		cacheOptions: {
 			SameSite: "None",

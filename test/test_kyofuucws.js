@@ -26,10 +26,10 @@ after(done => {
 
 it('quick text', () => {
 	const kfWs = new KyofuucWS({ url: "ws://127.0.0.1:4000" });
-	kfWs.onOpen(() => {
+	kfWs.onOpen((event) => {
 
 	});
 
-	console.log(kfWs);
+	//console.log(kfWs);
 });
 

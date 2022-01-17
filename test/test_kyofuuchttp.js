@@ -50,7 +50,7 @@ it('validate kyofuuc httpInterceptor', () => {
 
     assert.notEqual(kf.httpInterceptor.handlers[0], undefined);
     assert.equal(kf.httpInterceptor.handlers[0].cb, undefined);
-    assert.equal(kf.httpInterceptor.handlers[0].type, "PRE_REQUEST");
+    assert.equal(kf.httpInterceptor.handlers[0].type, "HTTP_PRE_REQUEST");
     assert.equal(typeof kf.httpInterceptor.handlers[1].cb, "function");
     assert.equal(typeof kf.httpInterceptor.handlers[2].cb, "function");
     assert.equal(typeof kf.httpInterceptor.handlers[3].cb, "function");

@@ -35,6 +35,15 @@ http configs
 }
 ```
 
+ws configs
+```
+{
+	protocol: [ 'json' ]
+	refreshCache: true,
+	invalidateCache: true
+}
+```
+
 remove when invalidateCache is true
 do not use cache value if refreshCache is true
 
