@@ -51,7 +51,7 @@ it('KyofuucWS connect [text#sub-protocol]', () => {
 });
 
 it('KyofuucWS connect [json#sub-protocol]', () => {
-	const kfWs = new KyofuucWS().ws({
+	const kfWs = ffs.ws({
 		url: "ws://127.0.0.1:4000",
 		protocol: [ "json" ]
 	});
@@ -67,7 +67,7 @@ it('KyofuucWS connect [json#sub-protocol]', () => {
 });
 
 it('KyofuucWS test message sending [text#sub-protocol]', () => {
-	const kfWs = new KyofuucWS().ws({
+	const kfWs = ffs.ws({
 		url: "ws://127.0.0.1:4000",
 		protocol: [ "text" ]
 	});
@@ -84,7 +84,7 @@ it('KyofuucWS test message sending [text#sub-protocol]', () => {
 });
 
 it('KyofuucWS test message sending [json#sub-protocol]', () => {
-	const kfWs = new KyofuucWS().ws({
+	const kfWs = ffs.ws({
 		url: "ws://127.0.0.1:4000",
 		protocol: [ "json" ]
 	});
