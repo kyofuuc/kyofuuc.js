@@ -1,10 +1,10 @@
 
 const assert = require('assert');
 const app = require("./resc/server");
+const ffs = require("../lib/kyofuuc");
 const KyofuucHttp = require('../lib/core/KyofuucHttp');
 const MapFFSCacheManager = require('../lib/cachemanagers/MapFFSCacheManager');
 const FuInterceptor = require('../lib/core/FuInterceptor');
-const ffs = require("../lib/kyofuuc");
 
 let server;
 let port = 3001;
@@ -64,7 +64,7 @@ it('validate kyofuuc httpInterceptor', () => {
 });
 
 it('kyofuuc request server greet', async () => {
-	const ffsResponse = await ffs.request(`http://127.0.0.1:${port}/greet`, {
+	const ffsResponse = await (new KyofuucHttp()).request(`http://127.0.0.1:${port}/greet`, {
 		method: "get",
 		responseType: "text"
 	});
@@ -74,11 +74,11 @@ it('kyofuuc request server greet', async () => {
 });
 
 it('kyofuuc request delete, get, head, options', async () => {
-	const ffsResponseDelete = await ffs.request(`http://127.0.0.1:${port}/delete`, {
+	const ffsResponseDelete = await (new KyofuucHttp()).request(`http://127.0.0.1:${port}/delete`, {
 		method: "delete",
 		responseType: "text"
 	});
-	const ffsResponseGet = await ffs.request(`http://127.0.0.1:${port}/get`, {
+	const ffsResponseGet = await (new KyofuucHttp()).request(`http://127.0.0.1:${port}/get`, {
 		method: "get",
 		responseType: "text"
 	});

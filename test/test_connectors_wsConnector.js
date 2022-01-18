@@ -41,7 +41,7 @@ function closeWSConnection(wsConnection) {
 it('wsConnector connect [text#sub-protocol]', async () => {
 	const wsConnection = wsConnector({
 		url: `ws://127.0.0.1:${port}`,
-		protocols: "text"
+		protocol: "text"
 	});
 
 	openedWSConnections.push(wsConnection);
@@ -58,7 +58,7 @@ it('wsConnector connect [text#sub-protocol]', async () => {
 it('wsConnector connect [json#sub-protocol]', async () => {
 	const wsConnection = wsConnector({
 		url: `ws://127.0.0.1:${port}`,
-		protocols: "json"
+		protocol: "json"
 	});
 
 	openedWSConnections.push(wsConnection);
@@ -75,7 +75,7 @@ it('wsConnector connect [json#sub-protocol]', async () => {
 it('wsConnector test message sending [text#sub-protocol]', async () => {
 	const wsConnection = wsConnector({
 		url: `ws://127.0.0.1:${port}`,
-		protocols: "text"
+		protocol: "text"
 	});
 
 	wsConnection.addEventListener('open', function open(e) {
@@ -92,7 +92,7 @@ it('wsConnector test message sending [text#sub-protocol]', async () => {
 it('wsConnector test message sending [json#sub-protocol]', async () => {
 	const wsConnection = wsConnector({
 		url: `ws://127.0.0.1:${port}`,
-		protocols: "json"
+		protocol: "json"
 	});
 
 	wsConnection.addEventListener('open', function open(e) {
@@ -104,7 +104,6 @@ it('wsConnector test message sending [json#sub-protocol]', async () => {
 	});
 	wsConnection.addEventListener('message', function message(e) {
 		const message = JSON.parse(e.data);
-		assert.deepEqual(new TextEncoder().encode("¢"), new Uint8Array([ 194, 162 ]))
 		assert.equal(message.received, true);
 		assert.equal(message.data.type, "Buffer");
 		assert.deepEqual(new TextDecoder().decode(new Uint8Array(message.data.data)), JSON.stringify({
@@ -124,11 +123,11 @@ it('wsConnector interceptor [text#sub-protocol]', async () => {
 	const fuInterceptor = new FuInterceptor();
 	const wsConnection = wsConnector({
 		url: `ws://127.0.0.1:${port}`,
-		protocols: "text"
+		protocol: "text"
 	}, fuInterceptor);
 	const wsConnection2 = wsConnector({
 		url: `ws://127.0.0.1:12345`,
-		protocols: "text"
+		protocol: "text"
 	}, fuInterceptor);
 
 	fuInterceptor.registerOnWSOpen((options, config, event) => {
