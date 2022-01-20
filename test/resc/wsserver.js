@@ -1,4 +1,5 @@
 
+const url = require('url');
 const WebSocket = require('ws');
 
 function onMessage(ws, message) {
@@ -12,8 +13,16 @@ function onMessage(ws, message) {
 		ws.send(`RECEIVED: ${message}`);
 	}
 }
-
-function onConnect(ws) {
+let wss;
+function onConnect(ws, req) {
+	const params = new URLSearchParams(url.parse(req.url).query);
+	if (params.get('uid')) {
+		let uid = params.get('uid');
+		let sid = params.get('sid');
+		if (!(uid === "U1234" && sid === "weytwge4578654gh5ghg")) {
+			ws.close();
+		}
+	}
 	ws.on('message', (message) => onMessage(ws, message));
 }
 
@@ -47,6 +56,7 @@ WSServer.prototype.listen = function listen(port, callback) {
 		this.sendEvent("error", err);
 	});
 	this.wss.on('connection', onConnect);
+	wss = this.wss;
 	return this;
 };
 

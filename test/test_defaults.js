@@ -27,5 +27,7 @@ it('defaults.httpConfig', () => {
 it('defaults.wsConfig', () => {
 	assert.deepEqual(defaults.wsConfig.connector, defaults.getDefaultWSConnector());
 	assert.deepEqual(defaults.wsConfig.protocol, []);
+	assert.deepEqual(defaults.wsConfig.reconnect, false);
+	assert.deepEqual(defaults.wsConfig.maxReconnect, 10);
 });
 

@@ -81,6 +81,7 @@ it('wsConnector test message sending [text#sub-protocol]', async () => {
 	wsConnection.addEventListener('open', function open(e) {
 		assert.equal(wsConnection.readyState, 1);
 		wsConnection.send("Hello World!");
+		assert.equal(wsConnection.bufferedAmount, 0);
 		openedWSConnections.push(wsConnection);
 	});
 	wsConnection.addEventListener('message', function message(e) {
@@ -100,6 +101,7 @@ it('wsConnector test message sending [json#sub-protocol]', async () => {
 		wsConnection.send(JSON.stringify({
 			message: "Hello World!"
 		}));
+		assert.equal(wsConnection.bufferedAmount, 0);
 		openedWSConnections.push(wsConnection);
 	});
 	wsConnection.addEventListener('message', function message(e) {
@@ -139,6 +141,7 @@ it('wsConnector interceptor [text#sub-protocol]', async () => {
 		assert.equal(event.target, wsConnection);
 		assert.equal(event.target.readyState, 1);
 		wsConnection.send("Hello World!");
+		assert.equal(event.target.bufferedAmount, 0);
 	}, {});
 	fuInterceptor.registerOnWSMessage((options, config, event) => {
 		assert.equal(event.target, wsConnection);
@@ -153,5 +156,39 @@ it('wsConnector interceptor [text#sub-protocol]', async () => {
 		assert.equal(event.target, wsConnection2);
 		assert.equal(event.target.readyState, 2);
 	}, {});
+});
+
+it('wsConnector Query String Authentication [text#sub-protocol]', async () => {
+	const wsConnection = wsConnector({
+		url: `ws://127.0.0.1:${port}`,
+		protocol: "text",
+		params: {
+			uid: "U1234",
+			sid: "weytwge4578654gh5ghg"
+		}
+	});
+	const wsConnection2 = wsConnector({
+		url: `ws://127.0.0.1:${port}`,
+		protocol: "text",
+		params: {
+			uid: "U1234",
+			sid: "weytwge4578654gh5ghg___"
+		}
+	});
+
+	assert.equal(wsConnection.url, "ws://127.0.0.1:4000?uid=U1234&sid=weytwge4578654gh5ghg");
+	assert.equal(wsConnection2.url, "ws://127.0.0.1:4000?uid=U1234&sid=weytwge4578654gh5ghg___");
+	openedWSConnections.push(wsConnection);
+	wsConnection.addEventListener('open', function open() {
+		assert.equal(wsConnection.protocol, "text");
+		assert.equal(wsConnection.readyState, 1);
+		closeWSConnection(wsConnection);
+	});
+	wsConnection.addEventListener('close', function open(e) {
+		assert.equal(wsConnection.readyState, 3);
+	});
+	wsConnection2.addEventListener('close', function open(e) {
+		assert.equal(e.target.url, "ws://127.0.0.1:4000?uid=U1234&sid=weytwge4578654gh5ghg___");
+	});
 });
 
