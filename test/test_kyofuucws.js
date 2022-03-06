@@ -11,7 +11,7 @@ const openedWSConnections = [];
 before((done) => {
 	const startServer = (count, done) => {
 		if (count >= 5) return;
-		server = wsapp.listen(port, done).on('error', (e) => {
+		server = (new wsapp()).listen(port, done).on('error', (e) => {
 			port++;
 			startServer(++count, done);
 		});

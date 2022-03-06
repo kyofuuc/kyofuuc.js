@@ -6,8 +6,7 @@ Most ideas and source is from express.js
 to build dist
 
 ```
-npm install -g uglify-js
-npm install -g browserify
+npm install --save-dev uglify-js browserify
 browserify index.js --s kyofuuc -o dist/kyofuuc.js
 browserify index.js --s kyofuuc | uglifyjs > dist/kyofuuc.min.js
 ```

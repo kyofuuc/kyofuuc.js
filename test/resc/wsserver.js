@@ -65,4 +65,4 @@ WSServer.prototype.close = function close(callback) {
 	return this;
 };
 
-module.exports = (new WSServer());
+module.exports = WSServer;
