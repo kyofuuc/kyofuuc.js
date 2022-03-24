@@ -7,8 +7,8 @@ to build dist
 
 ```
 npm install --save-dev uglify-js browserify
-browserify index.js --s kyofuuc -o dist/kyofuuc.js
-browserify index.js --s kyofuuc | uglifyjs > dist/kyofuuc.min.js
+browserify index.js --s ffs -o dist/kyofuuc.js
+browserify index.js --s ffs | uglifyjs > dist/kyofuuc.min.js
 ```
 
 

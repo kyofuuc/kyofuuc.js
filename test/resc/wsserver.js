@@ -61,7 +61,10 @@ WSServer.prototype.listen = function listen(port, callback) {
 };
 
 WSServer.prototype.close = function close(callback) {
-	if (this.wss) this.wss.close(callback);
+	if (this.wss) {
+		this.wss.close(callback);
+		this.wss = undefined;
+	}
 	return this;
 };
 

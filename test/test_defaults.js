@@ -28,6 +28,8 @@ it('defaults.wsConfig', () => {
 	assert.deepEqual(defaults.wsConfig.connector, defaults.getDefaultWSConnector());
 	assert.deepEqual(defaults.wsConfig.protocol, []);
 	assert.deepEqual(defaults.wsConfig.reconnect, false);
-	assert.deepEqual(defaults.wsConfig.maxReconnect, 5);
+	assert.deepEqual(defaults.wsConfig.maxReconnect, 99999);
+	assert.deepEqual(defaults.wsConfig.reconnectInterval, -1);
+	assert.deepEqual(defaults.wsConfig.reconnectIntervalByPower, false);
 });
 

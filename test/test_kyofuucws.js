@@ -153,19 +153,106 @@ it('KyofuucWS reconnect [text#sub-protocol]', () => {
 		reconnect: true,
 		maxReconnect: 10,
 	});
-	let reconnectionCount = 0;
+	let reconnectionCount1 = 0;
 
 	kfWs1.onOpen((kfws, event) => {
-		reconnectionCount++;
+		reconnectionCount1++;
 		assert.equal(kfWs1.state, KyofuucWS.STATE.CONNECTED);
 		event.target.close();
 	});
 	kfWs1.onClose((kfws, event) => {
-		assert.equal(kfWs1.reconnectionCount, 10);
-		assert.equal(reconnectionCount-1, kfWs1.reconnectionCount);
+		assert.equal(kfWs1.lastReconnectionCount, 10);
+		assert.equal(reconnectionCount1-1, kfWs1.lastReconnectionCount);
 		assert.equal(kfWs1.state, KyofuucWS.STATE.DISCONNECTED);
 	});
 });
+
+function getDateDiffInSeconds(date1, date2) {
+	var dif = date1.getTime() - date2.getTime();
+	var secondsFrom = dif / 1000;
+	return Math.floor(Math.abs(secondsFrom));
+}
+
+it('KyofuucWS reconnect interval [text#sub-protocol]', () => {
+	const kfWs1 = ffs.ws({
+		url: "ws://127.0.0.1:4000",
+		protocol: [ "text" ],
+		reconnect: true,
+		maxReconnect: 3,
+		reconnectInterval: 2
+	});
+	let reconnectionCount = 0;
+
+	kfWs1.onOpen((kfws, event) => {
+		reconnectionCount++;
+		kfWs1._reconnectionCount = kfWs1.lastReconnectionCount;
+		assert.equal(kfWs1.state, KyofuucWS.STATE.CONNECTED);
+		event.target.close();
+		if (reconnectionCount === 1) {
+			openedWSConnections.push(kfWs1);
+		}
+	});
+	kfWs1.onClose((kfws, event) => {
+		assert.equal(kfWs1.lastReconnectionCount, 3);
+		//assert.equal(reconnectionCount-1, kfWs1.lastReconnectionCount);
+		assert.equal(kfWs1.state, KyofuucWS.STATE.DISCONNECTED);
+		closeKfWSConnection(kfWs1);
+	});
+
+	let firstTime;
+	kfWs1.onStateChange((kfws, state) => {
+		if (state === KyofuucWS.STATE.RECONNECTING) {
+			if (reconnectionCount === 1) {
+				firstTime = new Date();
+			} else {
+				assert.equal(getDateDiffInSeconds(firstTime, new Date()), (kfWs1.lastReconnectionCount-1) * 2);
+			}
+		}
+	});
+});
+
+it('KyofuucWS reconnect interval with interval multiples [text#sub-protocol]', () => {
+	const kfWs1 = ffs.ws({
+		url: "ws://127.0.0.1:4000",
+		protocol: [ "text" ],
+		reconnect: true,
+		maxReconnect: 3,
+		reconnectInterval: 2,
+		reconnectIntervalByPower: true
+	});
+	let reconnectionCount = 0;
+
+	kfWs1.onOpen((kfws, event) => {
+		reconnectionCount++;
+		kfWs1._reconnectionCount = kfWs1.lastReconnectionCount;
+		assert.equal(kfWs1.state, KyofuucWS.STATE.CONNECTED);
+		event.target.close();
+		if (reconnectionCount === 1) {
+			openedWSConnections.push(kfWs1);
+		}
+	});
+	kfWs1.onClose((kfws, event) => {
+		assert.equal(kfWs1.lastReconnectionCount, 3);
+		//assert.equal(reconnectionCount-1, kfWs1.lastReconnectionCount);
+		assert.equal(kfWs1.state, KyofuucWS.STATE.DISCONNECTED);
+		closeKfWSConnection(kfWs1);
+	});
+
+	let firstTime;
+	kfWs1.onStateChange((kfws, state) => {
+		if (state === KyofuucWS.STATE.RECONNECTING) {
+			if (reconnectionCount === 1) {
+				firstTime = new Date();
+			} else {
+				let currentTime = new Date();
+				//console.log("RECONECTING", new Date(), kfWs1.lastReconnectionCount, Math.pow(2, kfWs1.lastReconnectionCount))
+				assert.equal(getDateDiffInSeconds(firstTime, currentTime), Math.pow(2, kfWs1.lastReconnectionCount));
+				firstTime = currentTime;
+			}
+		}
+	});
+});
+
 
 
 

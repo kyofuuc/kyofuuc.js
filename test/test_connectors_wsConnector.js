@@ -176,8 +176,8 @@ it('wsConnector Query String Authentication [text#sub-protocol]', async () => {
 		}
 	});
 
-	assert.equal(wsConnection.url, "ws://127.0.0.1:4000?uid=U1234&sid=weytwge4578654gh5ghg");
-	assert.equal(wsConnection2.url, "ws://127.0.0.1:4000?uid=U1234&sid=weytwge4578654gh5ghg___");
+	assert.equal(wsConnection.url, `ws://127.0.0.1:${port}?uid=U1234&sid=weytwge4578654gh5ghg`);
+	assert.equal(wsConnection2.url, `ws://127.0.0.1:${port}?uid=U1234&sid=weytwge4578654gh5ghg___`);
 	openedWSConnections.push(wsConnection);
 	wsConnection.addEventListener('open', function open() {
 		assert.equal(wsConnection.protocol, "text");
@@ -188,7 +188,7 @@ it('wsConnector Query String Authentication [text#sub-protocol]', async () => {
 		assert.equal(wsConnection.readyState, 3);
 	});
 	wsConnection2.addEventListener('close', function open(e) {
-		assert.equal(e.target.url, "ws://127.0.0.1:4000?uid=U1234&sid=weytwge4578654gh5ghg___");
+		assert.equal(e.target.url, `ws://127.0.0.1:${port}?uid=U1234&sid=weytwge4578654gh5ghg___`);
 	});
 });
 

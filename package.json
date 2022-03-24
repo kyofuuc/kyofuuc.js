@@ -3,9 +3,14 @@
   "version": "0.0.1",
   "description": "Powerful HTTP request for the browser and node.js",
   "main": "index.js",
+  "react-native": "dist/kyofuuc.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
   "scripts": {
-    "test": "mocha --timeout 10000",
-    "build": "browserify index.js --s kyofuuc -o dist/kyofuuc.js & browserify index.js --s kyofuuc | uglifyjs > dist/kyofuuc.min.js"
+    "test": "mocha --timeout 20000",
+    "build": "browserify index.broswer.js --s ffs -o dist/kyofuuc.js & browserify index.broswer.js --s ffs | uglifyjs > dist/kyofuuc.min.js"
   },
   "repository": {
     "type": "git",
@@ -49,8 +54,10 @@
     "browserify": "^17.0.0",
     "express": "^4.17.3",
     "mocha": "^9.2.1",
-    "uglify-js": "^3.15.2",
-    "ws": "^8.4.2",
+    "uglify-js": "^3.15.2"
+  },
+  "dependencies": {
+    "ws": "^8.5.0",
     "xmlhttprequest": "^1.8.0"
   }
 }

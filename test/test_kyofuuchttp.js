@@ -5,6 +5,8 @@ const ffs = require("../lib/kyofuuc");
 const KyofuucHttp = require('../lib/core/KyofuucHttp');
 const MapFFSCacheManager = require('../lib/cachemanagers/MapFFSCacheManager');
 const FuInterceptor = require('../lib/core/FuInterceptor');
+const { response } = require('./resc/server');
+const { utils } = require('../lib/kyofuuc');
 
 let server;
 let port = 3001;
@@ -186,5 +188,62 @@ it('kyofuuc request basic auth', async () => {
 	assert.equal(ffsResponse1.data.message, "Missing Authorization Header");
 	assert.equal(ffsResponse2.data.message, "Invalid Authentication Credentials");
 	assert.equal(ffsResponse3.data.message, "Success");
+});
+
+it('kyofuuc request retry', async () => {
+	let rserver;
+	(new KyofuucHttp()).request(`http://127.0.0.1:2901/greet`, {
+		method: "get",
+		responseType: "text",
+		retry: true,
+		cache: new MapFFSCacheManager(),
+	}).then(response => {
+		assert.equal(response.status, 109);
+		assert.equal(response.statusText, "Awaiting Retry");
+	}).catch(error => {
+		console.error(error.toJSON());
+	});
+	(new KyofuucHttp()).get(`http://127.0.0.1:2901/get`, {
+		responseType: "text",
+		retry: true,
+		cache: new MapFFSCacheManager()
+	}).then(response => {
+		assert.equal(response.status, 109);
+		assert.equal(response.statusText, "Awaiting Retry");
+		rserver = app.listen(2901, () => {
+			ffs.retryRequests();
+		}).on('error', (e) => {});
+	}).catch(error => {
+		console.error(error.toJSON());
+	});
+
+	utils.registerRetrySuccessEvent((type, response) => {
+		assert.equal(response.status, 200);
+		rserver.close();
+	});
+});
+
+it('kyofuuc request retry with maxRetry', async () => {
+	function onResponse(response) {
+		assert.equal(response.status, 109);
+		assert.equal(response.statusText, "Awaiting Retry");
+	}
+
+	(new KyofuucHttp()).request(`http://127.0.0.1:2901/greet`, {
+		method: "get",
+		responseType: "text",
+		retry: true,
+		cache: new MapFFSCacheManager(),
+		maxRetry: 4
+	}).then(onResponse).catch(error => {
+		console.error(error.toJSON());
+	});
+
+	utils.registerQueuedEvent((type, object) => {
+		ffs.retryRequests();
+	});
+	utils.registerRetryMaxedOutEvent((config) => {
+		assert.equal(config._retryCount-1, 4);
+	});
 });
 
