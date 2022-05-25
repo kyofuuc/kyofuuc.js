@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Powerful HTTP request for the browser and node.js",
   "main": "index.js",
-  "react-native": "dist/kyofuuc.js",
+  "module": "dist/kyofuuc.min.js",
+  "react-native": "dist/kyofuuc.min.js",
   "files": [
     "dist",
     "lib"

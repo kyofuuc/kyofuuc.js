@@ -293,7 +293,10 @@ it('httpConnector test with MapFFSCacheManager cache', async () => {
 
 it('httpConnector test with CookieFFSCacheManager cache', async () => {
 	const fuInterceptor = new FuInterceptor();
-	const cacheManager = new CookieFFSCacheManager(encryptor, decryptor, null, localStorage);
+	const cacheManager = new CookieFFSCacheManager({
+		encryptor, decryptor, 
+		bucket: localStorage
+	});
 	cacheManager.registerInterceptors(fuInterceptor);
 	const hcResponse1 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
@@ -327,7 +330,10 @@ it('httpConnector test with CookieFFSCacheManager cache', async () => {
 
 it('httpConnector test with LocalStorageFFSCacheManager cache', async () => {
 	const fuInterceptor = new FuInterceptor();
-	const cacheManager = new LocalStorageFFSCacheManager(encryptor, decryptor, localStorage);
+	const cacheManager = new LocalStorageFFSCacheManager({
+		encryptor, decryptor, 
+		bucket: localStorage
+	});
 	cacheManager.registerInterceptors(fuInterceptor);
 	const hcResponse1 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,
@@ -361,7 +367,10 @@ it('httpConnector test with LocalStorageFFSCacheManager cache', async () => {
 
 it('httpConnector test with SessionStorageFFSCacheManager cache', async () => {
 	const fuInterceptor = new FuInterceptor();
-	const cacheManager = new SessionStorageFFSCacheManager(encryptor, decryptor, localStorage);
+	const cacheManager = new SessionStorageFFSCacheManager({
+		encryptor, decryptor, 
+		bucket: localStorage
+	});
 	cacheManager.registerInterceptors(fuInterceptor);
 	const hcResponse1 = await httpConnector({
 		url: `http://127.0.0.1:${port}/greet`,

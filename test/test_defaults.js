@@ -18,9 +18,7 @@ it('defaults.httpConfig', () => {
 	assert.deepEqual(defaults.httpConfig.maxContentLength, -1);
 	assert.deepEqual(defaults.httpConfig.maxBodyLength, -1);
 	assert.deepEqual(defaults.httpConfig.headers, {
-		common: {
-			'Accept': 'application/json, text/plain, */*'
-		}
+		'Accept': 'application/json, text/plain, */*'
 	});
 });
 
