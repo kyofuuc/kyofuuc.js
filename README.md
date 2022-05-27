@@ -1,6 +1,4 @@
 
-![](https://github.com/exoticlibraries/libcester/raw/main/docs/libcester.png)
-
 # kyofuuc.js
 
 Simple yet powerful HTTP, Web Socket client with cache and offline support for JavaScript. For both browser and node.js.
@@ -539,6 +537,8 @@ The following are the request config only `url` is required.
 {
     status: 200,
     statusText: "OK",
+    data: null,
+    body: null,
     headers: {},
     config: {},
     request: {},
