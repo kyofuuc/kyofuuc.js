@@ -1,0 +1,35 @@
+<html>
+<head>
+	<title>KyofuucHttp Crash Test</title>
+	<script src="../../dist/kyofuuc.min.js"></script>
+</head>
+<body>
+
+</body>
+<script>
+	ffs.get("https://api.plos.org/search?q=title:DNA").then(response => {
+		console.log(response);
+	}).catch(error => {
+		console.error(error);
+	});
+	console.log(ffs.utils);
+	console.log(ffs.KyofuucHttp);
+	console.log(ffs.FuInterceptor);
+	console.log(ffs.cachemanagers);
+
+	const fuInterceptor = new ffs.FuInterceptor();
+	const lsFFSCacheManager = new ffs.cachemanagers.SessionStorageFFSCacheManager();
+	lsFFSCacheManager.registerInterceptors(fuInterceptor);
+	ffs.utils.invokeForEachInterceptorType(fuInterceptor, "HTTP_PRE_REQUEST", { cache: lsFFSCacheManager });
+	ffs.utils.invokeForEachInterceptorType(fuInterceptor, "HTTP_PRE_RESPONSE", { 
+		cache: lsFFSCacheManager,
+		cacheOptions: {
+			SameSite: "None",
+			Secure: true
+		}
+	}, { status: 200 });
+	
+	/*const ws = ffs.ws("wss://echo.websocket.org");*/
+
+</script>
+</html>
