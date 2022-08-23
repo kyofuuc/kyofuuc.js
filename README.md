@@ -46,12 +46,6 @@ Using npm:
 npm install kyofuuc
 ```
 
-Using bower:
-
-```bash
-bower install kyofuuc
-```
-
 Using yarn:
 
 ```bash

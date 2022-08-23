@@ -1,6 +1,6 @@
 {
   "name": "kyofuuc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Simple yet powerful HTTP, WS client with cache and offline support for JavaScript. For both browser and node.js.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -14,8 +14,7 @@
   "scripts": {
     "test": "mocha --timeout 20000",
     "build": "webpack",
-    "pack": "npm run build & npm pack",
-    "publish": "npm run pack & npm publish"
+    "pack": "npm run build & npm pack"
   },
   "repository": {
     "type": "git",
